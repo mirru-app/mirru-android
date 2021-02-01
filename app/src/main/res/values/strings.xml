@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name" translatable="false">✌️ Hand App</string>
     <string name="no_camera_access" translatable="false">Please grant camera permissions.</string>
+
+    <!-- Menu items -->
+    <string name="menu_connect">Connect</string>
+    <string name="menu_disconnect">Disconnect</string>
+    <string name="menu_scan">Scan</string>
+    <string name="menu_stop">Stop</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.handapp.mediapipebluetooth;
 
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
 import android.util.Size;
+import android.view.Menu;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
