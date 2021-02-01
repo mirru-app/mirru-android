@@ -1,0 +1,1 @@
+Mediapipe gradle build based on [this](https://github.com/jiuqiant/mediapipe_multi_hands_tracking_aar_example) example of using MediaPipe AAR in Android Studio with Gradle.
