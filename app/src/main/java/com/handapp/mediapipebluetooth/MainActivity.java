@@ -240,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
 //                    "\t#Hand landmarks for hand[" + handIndex + "]: " + landmarks.getLandmarkCount() + "\n";
             int landmarkIndex = 0;
             for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
+
 //                if (landmarkIndex == 8) {
                     multiHandLandmarksStr +=
                             "\t\tLandmark ["
