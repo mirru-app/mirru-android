@@ -17,6 +17,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.handapp.mediapipebluetooth.R;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.components.CameraHelper;
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     // Used to obtain the content view for this application. If you are extending this class, and
     // have a custom layout, override this method and return the custom layout.
     protected int getContentViewLayoutResId() {
-        return R.layout.activity_main;
+        return R.layout.gatt_services_characteristics;
     }
 
     @Override
