@@ -8,9 +8,11 @@ import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.util.Size;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -39,7 +41,7 @@ import java.util.Map;
 /**
  * Main activity of MediaPipe example apps.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Fragment {
     private static final String TAG = "MainActivity";
     private static final String BINARY_GRAPH_NAME = "hand_tracking_mobile_gpu.binarypb";
     private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     // {@link SurfaceTexture} where the camera-preview frames can be accessed.
     private SurfaceTexture previewFrameTexture;
     // {@link SurfaceView} that displays the camera-preview frames processed by a MediaPipe graph.
-    private SurfaceView previewDisplayView;
+    private SurfaceView previewDisplayView = new SurfaceView(getActivity());
     // Creates and manages an {@link EGLContext}.
     private EglManager eglManager;
     // Sends camera-preview frames into a MediaPipe graph for processing, and displays the processed
@@ -77,28 +79,34 @@ public class MainActivity extends AppCompatActivity {
     // Handles camera access via the {@link CameraX} Jetpack support library.
     private CameraXPreviewHelper cameraHelper;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(getContentViewLayoutResId());
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.gatt_services_characteristics, container, false);
 
         try {
             applicationInfo =
-                    getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+                    getActivity().getPackageManager().getApplicationInfo(getActivity().getPackageName(), PackageManager.GET_META_DATA);
+            initMediapipe();
         } catch (NameNotFoundException e) {
             Log.e(TAG, "Cannot find application info: " + e);
         }
 
-        previewDisplayView = new SurfaceView(this);
-        setupPreviewDisplayView();
+        setupPreviewDisplayView(view);
 
+        return view;
+    }
+
+    private void initMediapipe() {
         // Initialize asset manager so that MediaPipe native libraries can access the app assets, e.g.,
         // binary graphs.
-        AndroidAssetUtil.initializeNativeAssetManager(this);
+        AndroidAssetUtil.initializeNativeAssetManager(getContext());
         eglManager = new EglManager(null);
         processor =
                 new FrameProcessor(
-                        this,
+                        getContext(),
                         eglManager.getNativeContext(),
                         BINARY_GRAPH_NAME,
                         INPUT_VIDEO_STREAM_NAME,
@@ -107,24 +115,11 @@ public class MainActivity extends AppCompatActivity {
                 .getVideoSurfaceOutput()
                 .setFlipY(FLIP_FRAMES_VERTICALLY);
 
-        PermissionHelper.checkAndRequestCameraPermissions(this);
+        PermissionHelper.checkAndRequestCameraPermissions(getActivity());
         AndroidPacketCreator packetCreator = processor.getPacketCreator();
         Map<String, Packet> inputSidePackets = new HashMap<>();
         inputSidePackets.put(INPUT_NUM_HANDS_SIDE_PACKET_NAME, packetCreator.createInt32(NUM_HANDS));
         processor.setInputSidePackets(inputSidePackets);
-
-//        // To show verbose logging, run:
-        // adb shell setprop log.tag.MainActivity VERBOSE
-        if (Log.isLoggable(TAG, Log.VERBOSE)) {
-            processor.addPacketCallback(
-                    OUTPUT_LANDMARKS_STREAM_NAME,
-                    (packet) -> {
-                        List<NormalizedLandmarkList> multiHandLandmarks =
-                                PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
-                        Log.i(
-                                TAG, getMultiHandLandmarksDebugString(multiHandLandmarks));
-                    });
-        }
     }
 
     // Used to obtain the content view for this application. If you are extending this class, and
@@ -134,20 +129,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         converter =
                 new ExternalTextureConverter(
                         eglManager.getContext(), 2);
         converter.setFlipY(FLIP_FRAMES_VERTICALLY);
         converter.setConsumer(processor);
-        if (PermissionHelper.cameraPermissionsGranted(this)) {
+        if (PermissionHelper.cameraPermissionsGranted(getActivity())) {
             startCamera();
         }
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         converter.close();
 
@@ -181,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 });
         CameraHelper.CameraFacing cameraFacing = CameraHelper.CameraFacing.FRONT;
         cameraHelper.startCamera(
-                this, cameraFacing, /*unusedSurfaceTexture=*/ null, cameraTargetResolution());
+                null, this, /*unusedSurfaceTexture=*/ cameraFacing, cameraTargetResolution());
     }
 
     protected Size computeViewSize(int width, int height) {
@@ -206,9 +201,9 @@ public class MainActivity extends AppCompatActivity {
                 isCameraRotated ? displaySize.getWidth() : displaySize.getHeight());
     }
 
-    private void setupPreviewDisplayView() {
+    private void setupPreviewDisplayView(View view) {
         previewDisplayView.setVisibility(View.GONE);
-        ViewGroup viewGroup = findViewById(R.id.preview_display_layout);
+        ViewGroup viewGroup = view.findViewById(R.id.preview_display_layout);
         viewGroup.addView(previewDisplayView);
 
         previewDisplayView
