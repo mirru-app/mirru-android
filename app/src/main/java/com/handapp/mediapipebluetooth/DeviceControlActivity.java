@@ -16,8 +16,6 @@
 
 package com.handapp.mediapipebluetooth;
 
-import android.app.Activity;
-import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
@@ -32,11 +30,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
-
-import com.handapp.mediapipebluetooth.ui.main.DeviceControlFragment;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -146,7 +141,7 @@ public class DeviceControlActivity extends FragmentActivity {
         setContentView(R.layout.device_control_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, MainActivity.newInstance())
+                    .replace(R.id.mediapipe_container, MediapipeFragment.newInstance())
                     .commitNow();
         }
 

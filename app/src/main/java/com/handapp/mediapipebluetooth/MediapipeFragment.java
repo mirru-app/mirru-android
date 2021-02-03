@@ -2,7 +2,6 @@ package com.handapp.mediapipebluetooth;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -11,19 +10,16 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.handapp.mediapipebluetooth.R;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.components.CameraHelper;
@@ -33,11 +29,8 @@ import com.google.mediapipe.components.FrameProcessor;
 import com.google.mediapipe.components.PermissionHelper;
 import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.AndroidPacketCreator;
-import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.glutil.EglManager;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.handapp.mediapipebluetooth.ui.main.DeviceControlFragment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +39,7 @@ import java.util.Map;
 /**
  * Main activity of MediaPipe example apps.
  */
-public class MainActivity extends Fragment {
+public class MediapipeFragment extends Fragment {
     private static final String TAG = "MainActivity";
     private static final String BINARY_GRAPH_NAME = "hand_tracking_mobile_gpu.binarypb";
     private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
@@ -84,8 +77,8 @@ public class MainActivity extends Fragment {
     // Handles camera access via the {@link CameraX} Jetpack support library.
     private CameraXPreviewHelper cameraHelper;
 
-    public static MainActivity newInstance() {
-        return new MainActivity();
+    public static MediapipeFragment newInstance() {
+        return new MediapipeFragment();
     }
 
     private Context context;
@@ -96,7 +89,7 @@ public class MainActivity extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         context = inflater.getContext();
 
-        View view = inflater.inflate(R.layout.main_activity_fragment, container, false);
+        View view = inflater.inflate(R.layout.mediapipe_fragment, container, false);
 
         previewDisplayView = new SurfaceView(context);
 
@@ -134,12 +127,6 @@ public class MainActivity extends Fragment {
         Map<String, Packet> inputSidePackets = new HashMap<>();
         inputSidePackets.put(INPUT_NUM_HANDS_SIDE_PACKET_NAME, packetCreator.createInt32(NUM_HANDS));
         processor.setInputSidePackets(inputSidePackets);
-    }
-
-    // Used to obtain the content view for this application. If you are extending this class, and
-    // have a custom layout, override this method and return the custom layout.
-    protected int getContentViewLayoutResId() {
-        return R.layout.gatt_services_characteristics;
     }
 
     @Override
