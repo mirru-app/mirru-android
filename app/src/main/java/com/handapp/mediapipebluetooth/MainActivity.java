@@ -1,5 +1,7 @@
 package com.handapp.mediapipebluetooth;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -7,6 +9,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -33,6 +37,7 @@ import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.handapp.mediapipebluetooth.ui.main.DeviceControlFragment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +70,7 @@ public class MainActivity extends Fragment {
     // {@link SurfaceTexture} where the camera-preview frames can be accessed.
     private SurfaceTexture previewFrameTexture;
     // {@link SurfaceView} that displays the camera-preview frames processed by a MediaPipe graph.
-    private SurfaceView previewDisplayView = new SurfaceView(getActivity());
+    private SurfaceView previewDisplayView;
     // Creates and manages an {@link EGLContext}.
     private EglManager eglManager;
     // Sends camera-preview frames into a MediaPipe graph for processing, and displays the processed
@@ -79,12 +84,21 @@ public class MainActivity extends Fragment {
     // Handles camera access via the {@link CameraX} Jetpack support library.
     private CameraXPreviewHelper cameraHelper;
 
+    public static MainActivity newInstance() {
+        return new MainActivity();
+    }
 
+    private Context context;
+
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        context = inflater.getContext();
 
-        View view = inflater.inflate(R.layout.gatt_services_characteristics, container, false);
+        View view = inflater.inflate(R.layout.main_activity_fragment, container, false);
+
+        previewDisplayView = new SurfaceView(context);
 
         try {
             applicationInfo =
@@ -102,7 +116,7 @@ public class MainActivity extends Fragment {
     private void initMediapipe() {
         // Initialize asset manager so that MediaPipe native libraries can access the app assets, e.g.,
         // binary graphs.
-        AndroidAssetUtil.initializeNativeAssetManager(getContext());
+        AndroidAssetUtil.initializeNativeAssetManager(context);
         eglManager = new EglManager(null);
         processor =
                 new FrameProcessor(
@@ -136,7 +150,7 @@ public class MainActivity extends Fragment {
                         eglManager.getContext(), 2);
         converter.setFlipY(FLIP_FRAMES_VERTICALLY);
         converter.setConsumer(processor);
-        if (PermissionHelper.cameraPermissionsGranted(getActivity())) {
+        if (PermissionHelper.cameraPermissionsGranted((Activity) context)) {
             startCamera();
         }
     }
@@ -176,7 +190,7 @@ public class MainActivity extends Fragment {
                 });
         CameraHelper.CameraFacing cameraFacing = CameraHelper.CameraFacing.FRONT;
         cameraHelper.startCamera(
-                null, this, /*unusedSurfaceTexture=*/ cameraFacing, cameraTargetResolution());
+                context, this, /*unusedSurfaceTexture=*/ cameraFacing, cameraTargetResolution());
     }
 
     protected Size computeViewSize(int width, int height) {
