@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -45,7 +46,7 @@ import java.util.List;
  * communicates with {@code BluetoothLeService}, which in turn interacts with the
  * Bluetooth LE API.
  */
-public class DeviceControlActivity extends FragmentActivity {
+public class DeviceControlActivity extends FragmentActivity implements MediapipeFragment.SendDataInterface  {
     private final static String TAG = DeviceControlActivity.class.getSimpleName();
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
@@ -106,19 +107,6 @@ public class DeviceControlActivity extends FragmentActivity {
         }
     };
 
-    public void onRecordClick(View view) {
-        if (mGattCharacteristics != null) {
-            final BluetoothGattCharacteristic characteristic = mGattCharacteristics.get(0).get((0));
-            final int charaProp = characteristic.getProperties();
-            if ((charaProp | BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
-                mWriteCharacteristic = characteristic;
-                mBluetoothLeService.setCharacteristicNotification(
-                        mWriteCharacteristic, true);
-                writeCharacteristic(mWriteCharacteristic, "100,100,100,100");
-            }
-        }
-    }
-
     //https://stackoverflow.com/questions/20043388/working-with-ble-android-4-3-how-to-write-characteristics
     public void writeCharacteristic(BluetoothGattCharacteristic characteristic, String data) {
         if (mBluetoothLeService == null) {
@@ -139,10 +127,13 @@ public class DeviceControlActivity extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.device_control_activity);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.mediapipe_container, MediapipeFragment.newInstance())
-                    .commitNow();
+
+        if (findViewById(R.id.mediapipe_container) != null) {
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.mediapipe_container, MediapipeFragment.newInstance())
+                        .commitNow();
+            }
         }
 
         final Intent intent = getIntent();
@@ -267,5 +258,20 @@ public class DeviceControlActivity extends FragmentActivity {
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         return intentFilter;
+    }
+
+    @Override
+    public void sendData(String data) {
+        Log.d(TAG, "interface dataaAAAAaA: " + data);
+        if (mGattCharacteristics != null) {
+            final BluetoothGattCharacteristic characteristic = mGattCharacteristics.get(0).get((0));
+            final int charaProp = characteristic.getProperties();
+            if ((charaProp | BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
+                mWriteCharacteristic = characteristic;
+                mBluetoothLeService.setCharacteristicNotification(
+                        mWriteCharacteristic, true);
+                writeCharacteristic(mWriteCharacteristic, data);
+            }
+        }
     }
 }

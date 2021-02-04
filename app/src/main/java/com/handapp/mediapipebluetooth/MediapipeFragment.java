@@ -19,6 +19,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
@@ -76,12 +77,21 @@ public class MediapipeFragment extends Fragment {
     private ApplicationInfo applicationInfo;
     // Handles camera access via the {@link CameraX} Jetpack support library.
     private CameraXPreviewHelper cameraHelper;
+    //The stop and record toggle button for sending hand values over bluetooth.
+    private Button btnSend;
+    //The context from the inflater
+    private Context context;
 
     public static MediapipeFragment newInstance() {
         return new MediapipeFragment();
     }
 
-    private Context context;
+
+    SendDataInterface sendDataInterface;
+
+    public interface SendDataInterface {
+        void sendData(String data);
+    }
 
     @Nullable
     @Override
@@ -90,6 +100,15 @@ public class MediapipeFragment extends Fragment {
         context = inflater.getContext();
 
         View view = inflater.inflate(R.layout.mediapipe_fragment, container, false);
+
+        btnSend = view.findViewById(R.id.toggleButton);
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String data = "0,0,0,0";
+                sendDataInterface.sendData(data);
+            }
+        });
 
         previewDisplayView = new SurfaceView(context);
 
@@ -104,6 +123,18 @@ public class MediapipeFragment extends Fragment {
         setupPreviewDisplayView(view);
 
         return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Activity activity = (Activity) context;
+
+        try {
+            sendDataInterface = (SendDataInterface) activity;
+        } catch(RuntimeException a) {
+            throw new RuntimeException((activity.toString() + "Must implement Method"));
+        }
     }
 
     private void initMediapipe() {
