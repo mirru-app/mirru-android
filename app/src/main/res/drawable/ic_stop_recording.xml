@@ -9,8 +9,13 @@
       android:fillColor="#FFFFFF"
       android:fillAlpha="0.8"/>
   <path
-      android:pathData="M44.5,5.5C22.7,5.5 5,23.2 5,45s17.7,39.5 39.5,39.5S84,66.8 84,45S66.3,5.5 44.5,5.5zM60,58c0,1.6 -1.3,2.9 -2.9,2.9H31.7c-1.6,0 -2.9,-1.3 -2.9,-2.9V32.5c0,-1.6 1.3,-2.9 2.9,-2.9h25.4c1.6,0 2.9,1.3 2.9,2.9V58z"
+      android:pathData="M57.2,29.5H31.8c-1.6,0 -2.9,1.3 -2.9,2.9v25.4c0,1.6 1.3,2.9 2.9,2.9h25.4c1.6,0 2.9,-1.3 2.9,-2.9V32.4C60.1,30.8 58.8,29.5 57.2,29.5z"
       android:strokeAlpha="0.8"
-      android:fillColor="#D32929"
+      android:fillColor="#FFFFFF"
+      android:fillAlpha="0.8"/>
+  <path
+      android:pathData="M44.5,5.6C22.7,5.6 5,23.3 5,45.1s17.7,39.5 39.5,39.5S84,66.9 84,45.1S66.3,5.6 44.5,5.6zM60.1,57.8c0,1.6 -1.3,2.9 -2.9,2.9H31.8c-1.6,0 -2.9,-1.3 -2.9,-2.9V32.4c0,-1.6 1.3,-2.9 2.9,-2.9h25.4c1.6,0 2.9,1.3 2.9,2.9V57.8z"
+      android:strokeAlpha="0.8"
+      android:fillColor="#CC2323"
       android:fillAlpha="0.8"/>
 </vector>
