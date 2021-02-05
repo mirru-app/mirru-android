@@ -157,8 +157,8 @@ public class MediapipeFragment extends Fragment {
                     if (timerRunning) {
                         String data = "0, 0, 0, 0";
                         mediapipeInterface.sendDataFromMedipipe(data);
-                        Log.i(
-                                TAG, getMultiHandLandmarksDebugString(multiHandLandmarks));
+//                        Log.i(
+//                                TAG, getMultiHandLandmarksDebugString(multiHandLandmarks));
                     } else {
                         return;
                     }
