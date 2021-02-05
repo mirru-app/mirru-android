@@ -82,16 +82,17 @@ public class MediapipeFragment extends Fragment {
     private Button btnSend;
     //The context from the inflater
     private Context context;
+    private boolean timerRunning;
 
     public static MediapipeFragment newInstance() {
         return new MediapipeFragment();
     }
 
-    public interface SendDataInterface {
-        void sendData(String data);
+    public interface MediapipeInterface {
+        void sendDataFromMedipipe(String data);
     }
 
-    SendDataInterface sendDataInterface;
+    MediapipeInterface mediapipeInterface;
 
     @Nullable
     @Override
@@ -120,7 +121,7 @@ public class MediapipeFragment extends Fragment {
         Activity activity = (Activity) context;
 
         try {
-            sendDataInterface = (SendDataInterface) activity;
+            mediapipeInterface = (MediapipeInterface) activity;
         } catch(RuntimeException a) {
             throw new RuntimeException((activity.toString() + "Must implement Method"));
         }
@@ -153,10 +154,15 @@ public class MediapipeFragment extends Fragment {
                 (packet) -> {
                     List<NormalizedLandmarkList> multiHandLandmarks =
                             PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
-                    Log.i(
-                            TAG, getMultiHandLandmarksDebugString(multiHandLandmarks));
-                    String data = "0, 0, 0, 0";
-                    sendDataInterface.sendData(data);
+                    if (timerRunning) {
+                        String data = "0, 0, 0, 0";
+                        mediapipeInterface.sendDataFromMedipipe(data);
+                        Log.i(
+                                TAG, getMultiHandLandmarksDebugString(multiHandLandmarks));
+                    } else {
+                        return;
+                    }
+
                 });
     }
 
@@ -257,6 +263,10 @@ public class MediapipeFragment extends Fragment {
                                 processor.getVideoSurfaceOutput().setSurface(null);
                             }
                         });
+    }
+
+    public void receiveCountDownState(boolean isTimerRunning) {
+        timerRunning = isTimerRunning;
     }
 
     private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {

@@ -26,6 +26,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,7 +45,9 @@ import java.util.List;
  * communicates with {@code BluetoothLeService}, which in turn interacts with the
  * Bluetooth LE API.
  */
-public class DeviceControlActivity extends FragmentActivity implements MediapipeFragment.SendDataInterface  {
+public class DeviceControlActivity extends FragmentActivity
+        implements MediapipeFragment.MediapipeInterface,
+                    CountDownFragment.CountdownInterface {
     private final static String TAG = DeviceControlActivity.class.getSimpleName();
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
@@ -60,6 +63,8 @@ public class DeviceControlActivity extends FragmentActivity implements Mediapipe
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
+
+    MediapipeFragment mediapipeFragment = new MediapipeFragment();
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -130,7 +135,7 @@ public class DeviceControlActivity extends FragmentActivity implements Mediapipe
         if (findViewById(R.id.mediapipe_container) != null) {
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.mediapipe_container, MediapipeFragment.newInstance())
+                        .replace(R.id.mediapipe_container, mediapipeFragment)
                         .replace(R.id.countdown_container, countDownFragment)
                         .commitNow();
             }
@@ -264,7 +269,7 @@ public class DeviceControlActivity extends FragmentActivity implements Mediapipe
     }
 
     @Override
-    public void sendData(String data) {
+    public void sendDataFromMedipipe(String data) {
         Log.d(TAG, "interface dataaAAAAaA: " + data);
         if (mGattCharacteristics != null) {
             final BluetoothGattCharacteristic characteristic = mGattCharacteristics.get(0).get((0));
@@ -276,5 +281,10 @@ public class DeviceControlActivity extends FragmentActivity implements Mediapipe
                 writeCharacteristic(mWriteCharacteristic, data);
             }
         }
+    }
+
+    @Override
+    public void sendCountdownState(boolean isTimerRunning) {
+        mediapipeFragment.receiveCountDownState(isTimerRunning);
     }
 }

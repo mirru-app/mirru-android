@@ -1,5 +1,6 @@
 package com.handapp.mediapipebluetooth;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -22,6 +23,12 @@ public class CountDownFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public interface CountdownInterface {
+        void sendCountdownState(boolean isTimerRunning);
+    }
+
+    CountdownInterface countDownInterface;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,9 +49,27 @@ public class CountDownFragment extends Fragment {
                 } else if (!toggleButton.isChecked()){
                     StopTimer();
                 }
+                countDownInterface.sendCountdownState(isTimerRunning);
             }
         });
         return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof CountdownInterface) {
+            countDownInterface = (CountdownInterface) context;
+        } else {
+            throw new RuntimeException(context.toString() + "must implement CountDownInterface");
+        }
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        countDownInterface = null;
     }
 
     public void StartTimer() {
@@ -68,5 +93,6 @@ public class CountDownFragment extends Fragment {
         toggleButton.setChecked(false);
         isTimerRunning = false;
         countDownText.setText("");
+        countDownInterface.sendCountdownState(isTimerRunning);
     }
 }
