@@ -31,6 +31,7 @@ import com.google.mediapipe.components.PermissionHelper;
 import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.AndroidPacketCreator;
 import com.google.mediapipe.framework.Packet;
+import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 
 import java.util.HashMap;
@@ -86,30 +87,18 @@ public class MediapipeFragment extends Fragment {
         return new MediapipeFragment();
     }
 
-
-    SendDataInterface sendDataInterface;
-
     public interface SendDataInterface {
         void sendData(String data);
     }
+
+    SendDataInterface sendDataInterface;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         context = inflater.getContext();
-
         View view = inflater.inflate(R.layout.mediapipe_fragment, container, false);
-
-        btnSend = view.findViewById(R.id.toggleButton);
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String data = "0,0,0,0";
-                sendDataInterface.sendData(data);
-            }
-        });
-
         previewDisplayView = new SurfaceView(context);
 
         try {
@@ -158,6 +147,17 @@ public class MediapipeFragment extends Fragment {
         Map<String, Packet> inputSidePackets = new HashMap<>();
         inputSidePackets.put(INPUT_NUM_HANDS_SIDE_PACKET_NAME, packetCreator.createInt32(NUM_HANDS));
         processor.setInputSidePackets(inputSidePackets);
+
+        processor.addPacketCallback(
+                OUTPUT_LANDMARKS_STREAM_NAME,
+                (packet) -> {
+                    List<NormalizedLandmarkList> multiHandLandmarks =
+                            PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
+                    Log.i(
+                            TAG, getMultiHandLandmarksDebugString(multiHandLandmarks));
+                    String data = "0, 0, 0, 0";
+                    sendDataInterface.sendData(data);
+                });
     }
 
     @Override

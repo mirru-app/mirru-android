@@ -29,10 +29,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -128,10 +126,12 @@ public class DeviceControlActivity extends FragmentActivity implements Mediapipe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.device_control_activity);
 
+        CountDownFragment countDownFragment = new CountDownFragment();
         if (findViewById(R.id.mediapipe_container) != null) {
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.mediapipe_container, MediapipeFragment.newInstance())
+                        .replace(R.id.countdown_container, countDownFragment)
                         .commitNow();
             }
         }
@@ -144,6 +144,9 @@ public class DeviceControlActivity extends FragmentActivity implements Mediapipe
         getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+    }
+
+    private void commitNow() {
     }
 
     @Override
