@@ -116,7 +116,7 @@ public class DeviceControlActivity extends FragmentActivity
             Log.d(TAG, "BluetoothAdapter not initialized");
             return;
         }
-        Log.i(TAG, "characteristicccccc " + characteristic.getUuid().toString());
+        //Log.i(TAG, "characteristicccccc " + characteristic.getUuid().toString());
         try {
             Log.d(TAG, "data " + URLEncoder.encode(data, "utf-8"));
             characteristic.setValue(data);

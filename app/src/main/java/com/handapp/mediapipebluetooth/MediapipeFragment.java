@@ -7,11 +7,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
@@ -21,13 +16,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
-import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.mediapipe.components.CameraHelper;
 import com.google.mediapipe.components.CameraXPreviewHelper;
 import com.google.mediapipe.components.ExternalTextureConverter;
 import com.google.mediapipe.components.FrameProcessor;
 import com.google.mediapipe.components.PermissionHelper;
+import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
+import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.AndroidPacketCreator;
 import com.google.mediapipe.framework.Packet;
@@ -37,7 +36,7 @@ import com.google.mediapipe.glutil.EglManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import mikera.vectorz.Vector3;
 /**
  * Main activity of MediaPipe example apps.
  */
@@ -157,12 +156,10 @@ public class MediapipeFragment extends Fragment {
                     if (timerRunning) {
                         String data = "0, 0, 0, 0";
                         mediapipeInterface.sendDataFromMedipipe(data);
-//                        Log.i(
-//                                TAG, getMultiHandLandmarksDebugString(multiHandLandmarks));
+                        Log.i(TAG, "angle " + getAnglesOfFingersString(multiHandLandmarks));
                     } else {
                         return;
                     }
-
                 });
     }
 
@@ -269,6 +266,66 @@ public class MediapipeFragment extends Fragment {
         timerRunning = isTimerRunning;
     }
 
+    private String getAnglesOfFingersString(List<NormalizedLandmarkList> multiHandLandmarks) {
+        if (multiHandLandmarks.isEmpty()) {
+            return "No hand landmarks";
+        }
+        String fingerValuesString = "";
+        int handIndex = 0;
+
+        Vector3 palm0 = null;
+        Vector3 palm3 = null;;
+        Vector3 palm17 = null;;
+        Vector3 palmNormal = null;;
+
+        Vector3 index5Terminal = null;
+        Vector3 index8Starting = null;
+        Vector3 indexDir;
+
+
+        for (NormalizedLandmarkList landmarks : multiHandLandmarks)  {
+            int landmarkIndex = 0;
+            for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
+                if (landmarkIndex == 0) {
+                    palm0 = new Vector3(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+
+                if (landmarkIndex == 3) {
+                    palm3 = new Vector3(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+
+                if (landmarkIndex == 5) {
+                    index5Terminal = new Vector3(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+
+                if (landmarkIndex == 8) {
+                    index8Starting = new Vector3(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+
+                if (landmarkIndex == 17) {
+                    palm17 = new Vector3(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+                ++landmarkIndex;
+            }
+            index5Terminal.sub(index8Starting);
+            indexDir = index5Terminal;
+
+            palm3.sub(palm0);
+            palm17.sub(palm0);
+
+            Vector3 palmSide1 = new Vector3(palm3);
+            Vector3 palmSide2 = new Vector3(palm17);
+
+            palmSide1.crossProduct(palmSide2);
+
+            palmNormal = new Vector3(palmSide1);
+
+            fingerValuesString = "" + CalculateIndexAngle(indexDir, palmNormal);
+            ++handIndex;
+        }
+        return fingerValuesString;
+    }
+
     private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {
         if (multiHandLandmarks.isEmpty()) {
             return "No hand landmarks";
@@ -276,12 +333,9 @@ public class MediapipeFragment extends Fragment {
         String multiHandLandmarksStr = "";
         int handIndex = 0;
         for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
-//            multiHandLandmarksStr +=
-//                    "\t#Hand landmarks for hand[" + handIndex + "]: " + landmarks.getLandmarkCount() + "\n";
             int landmarkIndex = 0;
-            for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
 
-//                if (landmarkIndex == 8) {
+            for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
                     multiHandLandmarksStr +=
                             "\t\tLandmark ["
                                     + landmarkIndex
@@ -292,11 +346,19 @@ public class MediapipeFragment extends Fragment {
                                     + ", "
                                     + landmark.getZ()
                                     + ")\n";
-//                }
                 ++landmarkIndex;
             }
             ++handIndex;
         }
         return multiHandLandmarksStr;
+    }
+
+    private double CalculateIndexAngle(Vector3 indexDir, Vector3 palmNormal) {
+        double scalarProduct = palmNormal.x * indexDir.x + palmNormal.y * indexDir.y + palmNormal.z * indexDir.z;
+        double ref_module = Math.sqrt(palmNormal.x * palmNormal.x + palmNormal.y * palmNormal.y + palmNormal.z * palmNormal.z);
+        double index_module = Math.sqrt(indexDir.x * indexDir.x + indexDir.y * indexDir.y + indexDir.z * indexDir.z);
+        double angle_radians = Math.acos(scalarProduct / (ref_module * index_module));
+
+        return angle_radians * 180 / Math.PI;
     }
 }
