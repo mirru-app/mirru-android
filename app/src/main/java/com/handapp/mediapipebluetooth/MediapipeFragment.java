@@ -335,10 +335,10 @@ public class MediapipeFragment extends Fragment {
 
             Vector3 PalmNormal = CalcPalmNormal(palm0, palm5, palm17);
 
-            double thumbAngle = CalcAngle(FingerDir(thumb1, thumb4), PalmNormal);
-            double indexAngle = CalcAngle(FingerDir(index5, index8), PalmNormal);
-            double midAngle = CalcAngle(FingerDir(mid9, mid12), PalmNormal);
-            double ringAngle = CalcAngle(FingerDir(ring13, ring16), PalmNormal);
+            double thumbAngle = ServoAngle(FingerDir(thumb1, thumb4), PalmNormal);
+            double indexAngle = ServoAngle(FingerDir(index5, index8), PalmNormal);
+            double midAngle = ServoAngle(FingerDir(mid9, mid12), PalmNormal);
+            double ringAngle = ServoAngle(FingerDir(ring13, ring16), PalmNormal);
 
             fingerValuesString = (int)thumbAngle + "," + (int)indexAngle + "," + (int)midAngle + "," + (int)ringAngle;
             ++handIndex;
@@ -366,7 +366,7 @@ public class MediapipeFragment extends Fragment {
         return palmNormal;
     }
 
-    private double CalcAngle(Vector3 fingerDir, Vector3 palmNormal) {
+    private double ServoAngle(Vector3 fingerDir, Vector3 palmNormal) {
         double scalarProduct = palmNormal.x * fingerDir.x + palmNormal.y * fingerDir.y + palmNormal.z * fingerDir.z;
         double palm_module = Math.sqrt(palmNormal.x * palmNormal.x + palmNormal.y * palmNormal.y + palmNormal.z * palmNormal.z);
         double finger_module = Math.sqrt(fingerDir.x * fingerDir.x + fingerDir.y * fingerDir.y + fingerDir.z * fingerDir.z);
