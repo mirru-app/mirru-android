@@ -36,6 +36,7 @@ import com.google.mediapipe.glutil.EglManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import mikera.vectorz.Vector3;
 /**
  * Main activity of MediaPipe example apps.
@@ -154,9 +155,9 @@ public class MediapipeFragment extends Fragment {
                     List<NormalizedLandmarkList> multiHandLandmarks =
                             PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
                     if (timerRunning) {
-                        String data = "0, 0, 0, 0";
+                        String data = getAnglesOfFingersString(multiHandLandmarks);
                         mediapipeInterface.sendDataFromMedipipe(data);
-                        Log.i(TAG, "angle " + getAnglesOfFingersString(multiHandLandmarks));
+                        Log.i(TAG, "" + getAnglesOfFingersString(multiHandLandmarks));
                     } else {
                         return;
                     }
@@ -274,91 +275,102 @@ public class MediapipeFragment extends Fragment {
         int handIndex = 0;
 
         Vector3 palm0 = null;
-        Vector3 palm3 = null;;
+        Vector3 palm5 = null;
         Vector3 palm17 = null;;
-        Vector3 palmNormal = null;;
 
-        Vector3 index5Terminal = null;
-        Vector3 index8Starting = null;
-        Vector3 indexDir;
-
+        Vector3 thumb1 = null;
+        Vector3 thumb4 = null;
+        Vector3 index5 = null;
+        Vector3 index8 = null;
+        Vector3 mid9 = null;
+        Vector3 mid12 = null;
+        Vector3 ring13 = null;
+        Vector3 ring16 = null;
 
         for (NormalizedLandmarkList landmarks : multiHandLandmarks)  {
             int landmarkIndex = 0;
             for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
                 if (landmarkIndex == 0) {
-                    palm0 = new Vector3(landmark.getX(), landmark.getY(), landmark.getZ());
+                    palm0 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
-                if (landmarkIndex == 3) {
-                    palm3 = new Vector3(landmark.getX(), landmark.getY(), landmark.getZ());
+                if (landmarkIndex == 1) {
+                    thumb1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+
+                if (landmarkIndex == 4) {
+                    thumb4 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 5) {
-                    index5Terminal = new Vector3(landmark.getX(), landmark.getY(), landmark.getZ());
+                    index5 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    palm5 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 8) {
-                    index8Starting = new Vector3(landmark.getX(), landmark.getY(), landmark.getZ());
+                    index8 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+
+                if (landmarkIndex == 9) {
+                    mid9 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+
+                if (landmarkIndex == 12) {
+                    mid12 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+
+                if (landmarkIndex == 13) {
+                    ring13 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+
+                if (landmarkIndex == 16) {
+                    ring16 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 17) {
-                    palm17 = new Vector3(landmark.getX(), landmark.getY(), landmark.getZ());
+                    palm17 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
                 ++landmarkIndex;
             }
-            index5Terminal.sub(index8Starting);
-            indexDir = index5Terminal;
 
-            palm3.sub(palm0);
-            palm17.sub(palm0);
+            Vector3 PalmNormal = CalcPalmNormal(palm0, palm5, palm17);
 
-            Vector3 palmSide1 = new Vector3(palm3);
-            Vector3 palmSide2 = new Vector3(palm17);
+            double thumbAngle = CalcAngle(FingerDir(thumb1, thumb4), PalmNormal);
+            double indexAngle = CalcAngle(FingerDir(index5, index8), PalmNormal);
+            double midAngle = CalcAngle(FingerDir(mid9, mid12), PalmNormal);
+            double ringAngle = CalcAngle(FingerDir(ring13, ring16), PalmNormal);
 
-            palmSide1.crossProduct(palmSide2);
-
-            palmNormal = new Vector3(palmSide1);
-
-            fingerValuesString = "" + CalculateIndexAngle(indexDir, palmNormal);
+            fingerValuesString = (int)thumbAngle + "," + (int)indexAngle + "," + (int)midAngle + "," + (int)ringAngle;
             ++handIndex;
         }
         return fingerValuesString;
     }
 
-    private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {
-        if (multiHandLandmarks.isEmpty()) {
-            return "No hand landmarks";
-        }
-        String multiHandLandmarksStr = "";
-        int handIndex = 0;
-        for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
-            int landmarkIndex = 0;
-
-            for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
-                    multiHandLandmarksStr +=
-                            "\t\tLandmark ["
-                                    + landmarkIndex
-                                    + "]: ("
-                                    + landmark.getX()
-                                    + ", "
-                                    + landmark.getY()
-                                    + ", "
-                                    + landmark.getZ()
-                                    + ")\n";
-                ++landmarkIndex;
-            }
-            ++handIndex;
-        }
-        return multiHandLandmarksStr;
+    private Vector3 FingerDir(Vector3 startingPoint, Vector3 terminalPoint) {
+        terminalPoint.sub(startingPoint);
+        Vector3 direction = new Vector3(terminalPoint);
+        direction.toNormal();
+        return direction;
     }
 
-    private double CalculateIndexAngle(Vector3 indexDir, Vector3 palmNormal) {
-        double scalarProduct = palmNormal.x * indexDir.x + palmNormal.y * indexDir.y + palmNormal.z * indexDir.z;
-        double ref_module = Math.sqrt(palmNormal.x * palmNormal.x + palmNormal.y * palmNormal.y + palmNormal.z * palmNormal.z);
-        double index_module = Math.sqrt(indexDir.x * indexDir.x + indexDir.y * indexDir.y + indexDir.z * indexDir.z);
-        double angle_radians = Math.acos(scalarProduct / (ref_module * index_module));
+    private Vector3 CalcPalmNormal(Vector3 palm0, Vector3 palm5, Vector3 palm17) {
+        palm5.sub(palm0);
+        Vector3 side1 = palm5;
 
+        palm17.sub(palm0);
+        Vector3 side2 = palm17;
+
+        side1.crossProduct(side2);
+
+        Vector3 palmNormal = new Vector3(side1.toNormal());
+        return palmNormal;
+    }
+
+    private double CalcAngle(Vector3 fingerDir, Vector3 palmNormal) {
+        double scalarProduct = palmNormal.x * fingerDir.x + palmNormal.y * fingerDir.y + palmNormal.z * fingerDir.z;
+        double palm_module = Math.sqrt(palmNormal.x * palmNormal.x + palmNormal.y * palmNormal.y + palmNormal.z * palmNormal.z);
+        double finger_module = Math.sqrt(fingerDir.x * fingerDir.x + fingerDir.y * fingerDir.y + fingerDir.z * fingerDir.z);
+        double angle_radians = Math.acos(scalarProduct / (palm_module * finger_module));
         return angle_radians * 180 / Math.PI;
     }
 }
