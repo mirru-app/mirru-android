@@ -278,7 +278,7 @@ public class MediapipeFragment extends Fragment {
         Vector3 palm5 = null;
         Vector3 palm17 = null;;
 
-        Vector3 thumb1 = null;
+        Vector3 thumb2 = null;
         Vector3 thumb4 = null;
         Vector3 index5 = null;
         Vector3 index8 = null;
@@ -294,8 +294,8 @@ public class MediapipeFragment extends Fragment {
                     palm0 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
-                if (landmarkIndex == 1) {
-                    thumb1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                if (landmarkIndex == 2) {
+                    thumb2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 4) {
@@ -335,12 +335,17 @@ public class MediapipeFragment extends Fragment {
 
             Vector3 PalmNormal = CalcPalmNormal(palm0, palm5, palm17);
 
-            double thumbAngle = ServoAngle(FingerDir(thumb1, thumb4), PalmNormal);
+            double thumbAngle = ServoAngle(FingerDir(thumb2, thumb4), PalmNormal);
             double indexAngle = ServoAngle(FingerDir(index5, index8), PalmNormal);
             double midAngle = ServoAngle(FingerDir(mid9, mid12), PalmNormal);
             double ringAngle = ServoAngle(FingerDir(ring13, ring16), PalmNormal);
 
-            fingerValuesString = (int)thumbAngle + "," + (int)indexAngle + "," + (int)midAngle + "," + (int)ringAngle;
+            double mappedThumb = map(thumbAngle, 80, 40, 180, 0);
+            double mappedIndex = map(indexAngle, 10, 120, 0, 180);
+            double mappedMid = map(midAngle, 10, 120, 0, 180);
+            double mappedRing = map(ringAngle, 10, 120, 0, 180);
+
+            fingerValuesString = (int)mappedThum + "," + (int)mappedIndex + "," + (int)mappedMid + "," + (int)mappedRing;
             ++handIndex;
         }
         return fingerValuesString;
@@ -372,5 +377,15 @@ public class MediapipeFragment extends Fragment {
         double finger_module = Math.sqrt(fingerDir.x * fingerDir.x + fingerDir.y * fingerDir.y + fingerDir.z * fingerDir.z);
         double angle_radians = Math.acos(scalarProduct / (palm_module * finger_module));
         return angle_radians * 180 / Math.PI;
+    }
+
+    static double map(double value, double start1, double stop1, double start2, double stop2) {
+        double mappedValue = (value - start1) / (stop1 - start1) * (stop2 - start2) + start2;
+        if (mappedValue > 180) {
+            mappedValue = 180;
+        } else if (mappedValue < 0) {
+            mappedValue = 0;
+        }
+        return mappedValue;
     }
 }

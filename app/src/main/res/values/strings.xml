@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">✌️ Hand App</string>
+    <string name="app_name" translatable="false">Hand App</string>
     <string name="no_camera_access" translatable="false">Please grant camera permissions.</string>
 
     <!-- Menu items -->

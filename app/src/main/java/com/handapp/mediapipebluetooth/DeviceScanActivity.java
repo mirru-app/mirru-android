@@ -57,7 +57,7 @@ public class DeviceScanActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setTitle(R.string.title_devices);
+        getActionBar().setTitle(R.string.app_name);
         mHandler = new Handler();
 
         // Use this check to determine whether BLE is supported on the device.  Then you can
@@ -193,7 +193,9 @@ public class DeviceScanActivity extends ListActivity {
 
         public void addDevice(BluetoothDevice device) {
             if(!mLeDevices.contains(device)) {
-                mLeDevices.add(device);
+//                if (device.toString().equals("Brunel Hand")) {
+                    mLeDevices.add(device);
+//                }
                 Log.i("devices", mLeDevices.toString());
             }
         }
