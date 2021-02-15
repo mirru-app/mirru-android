@@ -340,12 +340,13 @@ public class MediapipeFragment extends Fragment {
             double midAngle = ServoAngle(FingerDir(mid9, mid12), PalmNormal);
             double ringAngle = ServoAngle(FingerDir(ring13, ring16), PalmNormal);
 
+            //calibration would get min and max points to map to 0-180
             double mappedThumb = map(thumbAngle, 80, 40, 180, 0);
             double mappedIndex = map(indexAngle, 10, 120, 0, 180);
             double mappedMid = map(midAngle, 10, 120, 0, 180);
             double mappedRing = map(ringAngle, 10, 120, 0, 180);
 
-            fingerValuesString = (int)mappedThum + "," + (int)mappedIndex + "," + (int)mappedMid + "," + (int)mappedRing;
+            fingerValuesString = (int)mappedThumb + "," + (int)mappedIndex + "," + (int)mappedMid + "," + (int)mappedRing;
             ++handIndex;
         }
         return fingerValuesString;
