@@ -271,21 +271,21 @@ public class MediapipeFragment extends Fragment {
         if (multiHandLandmarks.isEmpty()) {
             return "No hand landmarks";
         }
-        String fingerValuesString = "";
+        String fingerValuesString = null;
         int handIndex = 0;
 
         Vector3 palm0 = null;
         Vector3 palm5 = null;
         Vector3 palm17 = null;;
 
-        Vector3 thumb2 = null;
-        Vector3 thumb4 = null;
+        Vector3 thumb1 = null;
+        Vector3 thumb3 = null;
         Vector3 index5 = null;
         Vector3 index8 = null;
         Vector3 mid9 = null;
-        Vector3 mid12 = null;
+        Vector3 mid10 = null;
         Vector3 ring13 = null;
-        Vector3 ring16 = null;
+        Vector3 ring15 = null;
 
         for (NormalizedLandmarkList landmarks : multiHandLandmarks)  {
             int landmarkIndex = 0;
@@ -294,12 +294,12 @@ public class MediapipeFragment extends Fragment {
                     palm0 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
-                if (landmarkIndex == 2) {
-                    thumb2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                if (landmarkIndex == 1) {
+                    thumb1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
-                if (landmarkIndex == 4) {
-                    thumb4 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                if (landmarkIndex == 3) {
+                    thumb3 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 5) {
@@ -315,16 +315,16 @@ public class MediapipeFragment extends Fragment {
                     mid9 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
-                if (landmarkIndex == 12) {
-                    mid12 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                if (landmarkIndex == 10) {
+                    mid10 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 13) {
                     ring13 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
-                if (landmarkIndex == 16) {
-                    ring16 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                if (landmarkIndex == 15) {
+                    ring15 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 17) {
@@ -333,33 +333,33 @@ public class MediapipeFragment extends Fragment {
                 ++landmarkIndex;
             }
 
-            Vector3 PalmNormal = CalcPalmNormal(palm0, palm5, palm17);
-
-            double thumbAngle = ServoAngle(FingerDir(thumb2, thumb4), PalmNormal);
-            double indexAngle = ServoAngle(FingerDir(index5, index8), PalmNormal);
-            double midAngle = ServoAngle(FingerDir(mid9, mid12), PalmNormal);
-            double ringAngle = ServoAngle(FingerDir(ring13, ring16), PalmNormal);
+            Vector3 PalmNormal = calcPalmNormal(palm0, palm5, palm17);
+            boolean isThumb;
+            double thumbAngle = servoAngle(fingerDir(thumb1, thumb3), PalmNormal, true);
+            double indexAngle = servoAngle(fingerDir(index5, index8), PalmNormal, false);
+            double midAngle = servoAngle(fingerDir(mid9, mid10), PalmNormal, false);
+            double ringAngle = servoAngle(fingerDir(ring13, ring15), PalmNormal, false);
 
             //calibration would get min and max points to map to 0-180
-            double mappedThumb = map(thumbAngle, 80, 40, 180, 0);
-            double mappedIndex = map(indexAngle, 10, 120, 0, 180);
-            double mappedMid = map(midAngle, 10, 120, 0, 180);
-            double mappedRing = map(ringAngle, 10, 120, 0, 180);
+//            double mappedThumb = map(thumbAngle, 80, 40, 180, 0);
+//            double mappedIndex = map(indexAngle, 10, 120, 0, 180);
+//            double mappedMid = map(midAngle, 10, 120, 0, 180);
+//            double mappedRing = map(ringAngle, 10, 120, 0, 180);
 
-            fingerValuesString = (int)mappedThumb + "," + (int)mappedIndex + "," + (int)mappedMid + "," + (int)mappedRing;
+            fingerValuesString = (int)thumbAngle + "," + (int)indexAngle + "," + (int)midAngle + "," + (int)ringAngle;
             ++handIndex;
         }
         return fingerValuesString;
     }
 
-    private Vector3 FingerDir(Vector3 startingPoint, Vector3 terminalPoint) {
+    private Vector3 fingerDir(Vector3 startingPoint, Vector3 terminalPoint) {
         terminalPoint.sub(startingPoint);
         Vector3 direction = new Vector3(terminalPoint);
         direction.toNormal();
         return direction;
     }
 
-    private Vector3 CalcPalmNormal(Vector3 palm0, Vector3 palm5, Vector3 palm17) {
+    private Vector3 calcPalmNormal(Vector3 palm0, Vector3 palm5, Vector3 palm17) {
         palm5.sub(palm0);
         Vector3 side1 = palm5;
 
@@ -372,12 +372,26 @@ public class MediapipeFragment extends Fragment {
         return palmNormal;
     }
 
-    private double ServoAngle(Vector3 fingerDir, Vector3 palmNormal) {
+    private double servoAngle(Vector3 fingerDir, Vector3 palmNormal, boolean isThumb) {
         double scalarProduct = palmNormal.x * fingerDir.x + palmNormal.y * fingerDir.y + palmNormal.z * fingerDir.z;
         double palm_module = Math.sqrt(palmNormal.x * palmNormal.x + palmNormal.y * palmNormal.y + palmNormal.z * palmNormal.z);
         double finger_module = Math.sqrt(fingerDir.x * fingerDir.x + fingerDir.y * fingerDir.y + fingerDir.z * fingerDir.z);
         double angle_radians = Math.acos(scalarProduct / (palm_module * finger_module));
-        return angle_radians * 180 / Math.PI;
+        angle_radians = angle_radians * 180 / Math.PI;
+
+        double servoAngle;
+
+        if (!isThumb) {
+            servoAngle = (160-(100-angle_radians)*1.5); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
+        } else {
+            servoAngle = (20+(100-angle_radians)*2.5);  // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
+        }
+        if (servoAngle > 179) {
+            servoAngle = 179;
+        } else if (servoAngle < 1) {
+            servoAngle = 1;
+        }
+        return servoAngle;
     }
 
     static double map(double value, double start1, double stop1, double start2, double stop2) {
