@@ -58,4 +58,13 @@ dependencies {
     implementation "com.android.support:appcompat-v7:28.0.0"
     //Vectorz library
     implementation "net.mikera:vectorz:0.67.0"
+    testImplementation "junit:junit:4.11"
+}
+
+sourceSets {
+    test {
+        java {
+            srcDirs = ["test/model"]  // Note @Peter's comment below
+        }
+    }
 }
