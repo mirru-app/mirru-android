@@ -37,17 +37,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mikera.arrayz.Array;
-import mikera.arrayz.Arrayz;
-import mikera.arrayz.INDArray;
-import mikera.arrayz.NDArray;
-import mikera.matrixx.Matrix;
-import mikera.matrixx.algo.Determinant;
-import mikera.matrixx.impl.IdentityMatrix;
-import mikera.matrixx.impl.TransposedMatrix;
-import mikera.matrixx.impl.VectorMatrixM3;
-import mikera.vectorz.Vector;
+import mikera.vectorz.Vector2;
 import mikera.vectorz.Vector3;
+import com.handapp.mediapipebluetooth.FingerAngles;
+import com.handapp.mediapipebluetooth.FingerCircles;
 /**
  * Main activity of MediaPipe example apps.
  */
@@ -378,12 +371,11 @@ public class MediapipeFragment extends Fragment {
                 ++landmarkIndex;
             }
 
-            Vector3 PalmNormal = calcPalmNormal(palm0, palm5, palm17);
-
-            double thumbAngle = servoAngle(fingerDir(palm0, thumb3), PalmNormal, true);
-            double indexAngle = servoAngle(fingerDir(index5, index6), PalmNormal, false);
-            double midAngle = servoAngle(fingerDir(mid9, mid10), PalmNormal, false);
-            double ringAngle = servoAngle(fingerDir(ring13, ring14), PalmNormal, false);
+            Vector3 PalmNormal = FingerAngles.calcPalmNormal(palm0, palm5, palm17);
+            double thumbAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(palm0, thumb3), PalmNormal, true);
+            double indexAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(index5, index6), PalmNormal, false);
+            double midAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(mid9, mid10), PalmNormal, false);
+            double ringAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(ring13, ring14), PalmNormal, false);
 
             fingerValuesString = (int)thumbAngle + "," + (int)indexAngle + "," + (int)midAngle + "," + (int)ringAngle;
             ++handIndex;
@@ -391,52 +383,81 @@ public class MediapipeFragment extends Fragment {
         return fingerValuesString;
     }
 
-    private Vector3 fingerDir(Vector3 startingPoint, Vector3 terminalPoint) {
-        terminalPoint.sub(startingPoint);
-        Vector3 direction = new Vector3(terminalPoint);
-        direction.toNormal();
-        return direction;
-    }
-
-    private Vector3 calcPalmNormal(Vector3 palm0, Vector3 palm5, Vector3 palm17) {
-        palm5.sub(palm0);
-        Vector3 side1 = palm5;
-
-        palm17.sub(palm0);
-        Vector3 side2 = palm17;
-
-        side1.crossProduct(side2);
-
-        Vector3 palmNormal = new Vector3(side1.toNormal());
-        return palmNormal;
-    }
-
-    private double servoAngle(Vector3 fingerDir, Vector3 palmNormal, boolean isThumb) {
-        //angle calculation by:
-        //https://www.instructables.com/Robotic-Hand-controlled-by-Gesture-with-Arduino-Le/
-        double scalarProduct = palmNormal.x * fingerDir.x + palmNormal.y * fingerDir.y + palmNormal.z * fingerDir.z;
-        double palm_module = Math.sqrt(palmNormal.x * palmNormal.x + palmNormal.y * palmNormal.y + palmNormal.z * palmNormal.z);
-        double finger_module = Math.sqrt(fingerDir.x * fingerDir.x + fingerDir.y * fingerDir.y + fingerDir.z * fingerDir.z);
-        double angle_radians = Math.acos(scalarProduct / (palm_module * finger_module));
-        double angle_degrees = angle_radians * 180 / Math.PI;
-
-        double servoAngle;
-        if (!isThumb) {
-             servoAngle = (160 - (100 - angle_degrees) * 1.5); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
-        } else {
-            servoAngle = (20+(100-angle_degrees)*1.5);; // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
+    private String getCirclesOfFingersString(List<NormalizedLandmarkList> multiHandLandmarks) {
+        if (multiHandLandmarks.isEmpty()) {
+            return "No hand landmarks";
         }
+        String fingerCirclesString = null;
+        int handIndex = 0;
 
-        if(servoAngle < 1)
-            servoAngle = 1;
-        else if (servoAngle > 180)
-            servoAngle = 180;
+        Vector2 thumb1 = null, thumb2 = null, thumb3 = null;
+        Vector2 index1 = null, index2 = null, index3 = null;
+        Vector2 mid1 = null, mid2 = null, mid3 = null;
+        Vector2 ring1 = null, ring2 = null, ring3 = null;
 
-        return servoAngle;
-    }
+        for (NormalizedLandmarkList landmarks : multiHandLandmarks)  {
+            int landmarkIndex = 0;
+            for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
 
-    static double map(double value, double start1, double stop1, double start2, double stop2) {
-        double mappedValue = (value - start1) / (stop1 - start1) * (stop2 - start2) + start2;
-        return mappedValue;
+                if (landmarkIndex == 2) {
+                    thumb1 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 3) {
+                    thumb2 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 4) {
+                    thumb3 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 6) {
+                    index1 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 7) {
+                    index2 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 8) {
+                    index3 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 10) {
+                    mid1 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 11) {
+                    mid2 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 12) {
+                    mid3 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 14) {
+                    ring1 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 15) {
+                    ring2 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 16) {
+                    ring3 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                ++landmarkIndex;
+            }
+
+            double thumbAngle = FingerCircles.getAngle(thumb1, thumb2, thumb3, true);
+            double indexAngle = FingerCircles.getAngle(index1, index2, index3, false);
+            double midAngle = FingerCircles.getAngle(mid1, mid2, mid3, false);
+            double ringAngle = FingerCircles.getAngle(ring1, ring2, ring3, false);
+
+            fingerCirclesString = (int)thumbAngle + "," + (int)indexAngle + "," + (int)midAngle + "," + (int)ringAngle;
+            ++handIndex;
+        }
+        return fingerCirclesString;
     }
 }

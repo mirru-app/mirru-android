@@ -1,28 +1,17 @@
 package com.handapp.mediapipebluetooth;
 
 import java.text.*;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import mikera.vectorz.Vector2;
 
-public class FindCircleTest {
-    static DecimalFormat df;
-    static double r;
-    static int h;
-    static int k;
+class FingerCircles
+{
+    double angle;
 
-    @Test
-    public void main() {
-        findCircle(Vector2.of(1, 1), Vector2.of(2, 4), Vector2.of(5, 3));
-        assertEquals(2.23607, r, 1);
-        assertEquals(3, h, 0);
-        assertEquals(2, k, 0);
-    }
+    // Function to find the circle on
+    // which the given three points lie
+    // This code is contributed by chandan_jnu
 
-    static void findCircle(Vector2 point1, Vector2 point2, Vector2 point3)
-    {
-        // Function to find the circle on
-        // which the given three points lie
+    static double getAngle(Vector2 point1, Vector2 point2, Vector2 point3, boolean isThumb) {
         int x12 = (int) point1.x - (int) point2.x;
         int x13 = (int) point1.x - (int) point3.x;
 
@@ -66,17 +55,20 @@ public class FindCircleTest {
         // eqn of circle be x^2 + y^2 + 2*g*x + 2*f*y + c = 0
         // where centre is (h = -g, k = -f) and radius r
         // as r^2 = h^2 + k^2 - c
-        h = -g;
-        k = -f;
+        int h = -g;
+        int k = -f;
         int sqr_of_r = h * h + k * k - c;
 
         // r is the radius
-        r = Math.sqrt(sqr_of_r);
-        df = new DecimalFormat("#.#####");
-        System.out.println("Centre = ("+h +","+k +")");
-        System.out.println("Radius = "+df.format(r));
+        double r = Math.sqrt(sqr_of_r);
+        DecimalFormat df = new DecimalFormat("#.#####");
+        Vector2 center = Vector2.of(h, k);
+
+        //normalize radii
+        final double PI = 3.14;
+        double shift = 0.020746529414226417;
+        double normalizedRadii = Math.atan(1 * r - shift) / ( PI / 2) * 1;
+        double angle = normalizedRadii * 180;
+        return angle;
     }
 }
-
-// This code is contributed by chandan_jnu
-// https://www.geeksforgeeks.org/equation-of-circle-when-three-points-on-the-circle-are-given/
