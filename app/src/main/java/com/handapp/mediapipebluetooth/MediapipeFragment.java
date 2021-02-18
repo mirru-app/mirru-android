@@ -284,12 +284,12 @@ public class MediapipeFragment extends Fragment {
         String multiHandLandmarksStr = "";
         int handIndex = 0;
         for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
-//            multiHandLandmarksStr +=
-//                    "\t#Hand landmarks for hand[" + handIndex + "]: " + landmarks.getLandmarkCount() + "\n";
+            multiHandLandmarksStr +=
+                    "\t#Hand landmarks for hand[" + handIndex + "]: " + landmarks.getLandmarkCount() + "\n";
             int landmarkIndex = 0;
             for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
 
-//                if (landmarkIndex == 8) {
+                if (landmarkIndex == 8) {
                 multiHandLandmarksStr +=
                         "\t\tLandmark ["
                                 + landmarkIndex
@@ -300,7 +300,7 @@ public class MediapipeFragment extends Fragment {
                                 + ", "
                                 + landmark.getZ()
                                 + ")\n";
-//                }
+                }
                 ++landmarkIndex;
             }
             ++handIndex;

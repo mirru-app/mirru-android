@@ -25,4 +25,9 @@ public class CalculatePalmNormal {
         Vector3 sideA = palm17;
         assertEquals(Vector3.of(-1,2,0), sideA);
     }
+
+    @Test
+    public void sideBisCorrect() {
+
+    }
 }
