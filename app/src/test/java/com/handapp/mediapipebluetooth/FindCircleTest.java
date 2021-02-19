@@ -1,16 +1,28 @@
-
 package com.handapp.mediapipebluetooth;
 
 import java.text.*;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import mikera.vectorz.Vector2;
 
-class FingerCircles
-{
-    // Function to find the circle on
-    // which the given three points lie
-    // This code is contributed by chandan_jnu
-    //https://www.geeksforgeeks.org/equation-of-circle-when-three-points-on-the-circle-are-given/
-    static float getAngle(Vector2 point1, Vector2 point2, Vector2 point3, boolean isThumb) {
+public class FindCircleTest {
+    static DecimalFormat df;
+    static double r;
+    static float h;
+    static float k;
+
+    @Test
+    public void main() {
+        findCircle(Vector2.of(-0.1, 0.2), Vector2.of(-0.2, 0.1), Vector2.of(0.003, 3.0));
+        assertEquals(2.14, r, 1);
+        assertEquals(-1.66, h, 1);
+        assertEquals(1.66, k, 1);
+    }
+
+    static void findCircle(Vector2 point1, Vector2 point2, Vector2 point3)
+    {
+        // Function to find the circle on
+        // which the given three points lie
         float x12 = (float) point1.x - (float) point2.x;
         float x13 = (float) point1.x - (float) point3.x;
 
@@ -54,30 +66,17 @@ class FingerCircles
         // eqn of circle be x^2 + y^2 + 2*g*x + 2*f*y + c = 0
         // where centre is (h = -g, k = -f) and radius r
         // as r^2 = h^2 + k^2 - c
-        float h = -g;
-        float k = -f;
+        h = -g;
+        k = -f;
         float sqr_of_r = h * h + k * k - c;
 
         // r is the radius
-        float r = (float) Math.sqrt(sqr_of_r);
-        DecimalFormat df = new DecimalFormat("#.#####");
-//        System.out.println("Centre = (" + h + "," + k + ")");
-//        System.out.println("Radius = " + df.format(r));
-
-        //normalize radii
-        final float PI = (float) 3.14;
-        float shift = (float) 0.020746529414226417;
-        float normalizedRadii = (float) (Math.atan(1 * r - shift) / ( PI / 2) * 1);
-//        System.out.println("normalizedRadii = " + normalizedRadii);
-
-        float angle;
-
-        if (!isThumb) {
-            angle = normalizedRadii * 180;
-        } else {
-            angle = 180 - (180*normalizedRadii);
-        }
-        //System.out.println("angle = " + normalizedRadii);
-        return angle;
+        r = Math.sqrt(sqr_of_r);
+        df = new DecimalFormat("#.#####");
+//        System.out.println("Centre = ("+h +","+k +")");
+//        System.out.println("Radius = "+df.format(r));
     }
 }
+
+// This code is contributed by chandan_jnu
+// https://www.geeksforgeeks.org/equation-of-circle-when-three-points-on-the-circle-are-given/
