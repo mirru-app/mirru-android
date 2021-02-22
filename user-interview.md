@@ -29,10 +29,10 @@ What is your most used programmed grip?
 * Are you satisfied with the speed of creating grips?
 
 
-Demo
-Tell her what we plan on doing
-Questions about demo
-          What do you think? (Test general reaction)
+1. Demo
+2. Tell her what we plan on doing
+3. Questions about demo
+* What do you think? (Test general reaction)
 * How do you see controlling you're prosthetic with the camera useful?
     * How do you see recording with the camera useful?
     * What potential do you see for moving gestures?
