@@ -33,7 +33,6 @@ import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -284,16 +283,16 @@ public class MediapipeFragment extends Fragment {
             for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
 
                 if (landmarkIndex == 8) {
-                multiHandLandmarksStr +=
-                        "\t\tLandmark ["
-                                + landmarkIndex
-                                + "]: ("
-                                + landmark.getX()
-                                + ", "
-                                + landmark.getY()
-                                + ", "
-                                + landmark.getZ()
-                                + ")\n";
+                    multiHandLandmarksStr +=
+                            "\t\tLandmark ["
+                                    + landmarkIndex
+                                    + "]: ("
+                                    + landmark.getX()
+                                    + ", "
+                                    + landmark.getY()
+                                    + ", "
+                                    + landmark.getZ()
+                                    + ")\n";
                 }
                 ++landmarkIndex;
             }
@@ -389,69 +388,75 @@ public class MediapipeFragment extends Fragment {
             return "No hand landmarks";
         }
         String fingerCirclesString = null;
-        Vector2 thumb1 = null;
-        Vector2 thumb2 = null;
-        Vector2 thumb3 = null;
+        int handIndex = 0;
 
-        Vector2 index1 = null;
-        Vector2 index2 = null;
-        Vector2 index3 = null;
+        Vector2 thumb1 = null, thumb2 = null, thumb3 = null;
+        Vector2 index1 = null, index2 = null, index3 = null;
+        Vector2 mid1 = null, mid2 = null, mid3 = null;
+        Vector2 ring1 = null, ring2 = null, ring3 = null;
 
-        Vector2 mid1 = null;
-        Vector2 mid2 = null;
-        Vector2 mid3 = null;
+        for (NormalizedLandmarkList landmarks : multiHandLandmarks)  {
+            int landmarkIndex = 0;
+            for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
 
-        Vector2 ring1 = null;
-        Vector2 ring2 = null;
-        Vector2 ring3 = null;
+                if (landmarkIndex == 2) {
+                    thumb1 = Vector2.of(landmark.getX(), landmark.getY());
+                }
 
-        List<Float> thumbAngleList = new ArrayList<>();
-        List<Float> indexAngleList = new ArrayList<>();
-        List<Float> midAngleList = new ArrayList<>();
-        List<Float> ringAngleList = new ArrayList<>();
+                if (landmarkIndex == 3) {
+                    thumb2 = Vector2.of(landmark.getX(), landmark.getY());
+                }
 
-        for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
+                if (landmarkIndex == 4) {
+                    thumb3 = Vector2.of(landmark.getX(), landmark.getY());
+                }
 
-            int max = 10;
-            for (int i = 0; i < max; i++) {
-                thumb1 = Vector2.of(landmarks.getLandmark(2).getX(), landmarks.getLandmark(2).getX());
-                thumb2 = Vector2.of(landmarks.getLandmark(3).getX(), landmarks.getLandmark(3).getY());
-                thumb3 = Vector2.of(landmarks.getLandmark(4).getX(), landmarks.getLandmark(4).getY());
+                if (landmarkIndex == 6) {
+                    index1 = Vector2.of(landmark.getX(), landmark.getY());
+                }
 
-                index1 = Vector2.of(landmarks.getLandmark(6).getX(), landmarks.getLandmark(6).getX());
-                index2 = Vector2.of(landmarks.getLandmark(7).getX(), landmarks.getLandmark(7).getY());
-                index3 = Vector2.of(landmarks.getLandmark(8).getX(), landmarks.getLandmark(8).getY());
+                if (landmarkIndex == 7) {
+                    index2 = Vector2.of(landmark.getX(), landmark.getY());
+                }
 
-                mid1 = Vector2.of(landmarks.getLandmark(10).getX(), landmarks.getLandmark(10).getX());
-                mid2 = Vector2.of(landmarks.getLandmark(11).getX(), landmarks.getLandmark(11).getY());
-                mid3 = Vector2.of(landmarks.getLandmark(12).getX(), landmarks.getLandmark(12).getY());
+                if (landmarkIndex == 8) {
+                    index3 = Vector2.of(landmark.getX(), landmark.getY());
+                }
 
-                ring1 = Vector2.of(landmarks.getLandmark(14).getX(), landmarks.getLandmark(14).getX());
-                ring2 = Vector2.of(landmarks.getLandmark(15).getX(), landmarks.getLandmark(15).getY());
-                ring3 = Vector2.of(landmarks.getLandmark(16).getX(), landmarks.getLandmark(16).getY());
+                if (landmarkIndex == 10) {
+                    mid1 = Vector2.of(landmark.getX(), landmark.getY());
+                }
 
-                thumbAngleList.add(FingerCircles.getAngle(thumb1, thumb2, thumb3, true));
-                indexAngleList.add(FingerCircles.getAngle(index1, index2, index3, false));
-                midAngleList.add(FingerCircles.getAngle(mid1, mid2, mid3, false));
-                ringAngleList.add(FingerCircles.getAngle(ring1, ring2, ring3, false));
+                if (landmarkIndex == 11) {
+                    mid2 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 12) {
+                    mid3 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 14) {
+                    ring1 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 15) {
+                    ring2 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                if (landmarkIndex == 16) {
+                    ring3 = Vector2.of(landmark.getX(), landmark.getY());
+                }
+
+                ++landmarkIndex;
             }
 
-            Float[] thumbAngleArray = thumbAngleList.toArray(new Float[0]);
-            Float[] indexAngleArray = indexAngleList.toArray(new Float[0]);
-            Float[] midAngleArray = midAngleList.toArray(new Float[0]);
-            Float[] ringAngleArray = ringAngleList.toArray(new Float[0]);
+            double thumbAngle = FingerCircles.getAngle(thumb1, thumb2, thumb3, true);
+            double indexAngle = FingerCircles.getAngle(index1, index2, index3, false);
+            double midAngle = FingerCircles.getAngle(mid1, mid2, mid3, false);
+            double ringAngle = FingerCircles.getAngle(ring1, ring2, ring3, false);
 
-            float thumbAngleSmoothed = Average.streamAvg(thumbAngleArray, max);
-            float indexAngleSmoothed = Average.streamAvg(indexAngleArray, max);
-            float midAngleSmoothed = Average.streamAvg(midAngleArray, max);
-            float ringAngleSmoothed = Average.streamAvg(ringAngleArray, max);
-
-            thumbAngleList.clear();
-            indexAngleList.clear();
-            midAngleList.clear();
-            ringAngleList.clear();
-
-            fingerCirclesString = (int)thumbAngleSmoothed + "," + (int)indexAngleSmoothed + "," + (int)midAngleSmoothed + "," + (int)ringAngleSmoothed;
+            fingerCirclesString = (int)thumbAngle + "," + (int)indexAngle + "," + (int)midAngle + "," + (int)ringAngle;
+            ++handIndex;
         }
         return fingerCirclesString;
     }

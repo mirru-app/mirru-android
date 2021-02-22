@@ -9,7 +9,6 @@ class FingerCircles
     // which the given three points lie
     // This code is contributed by chandan_jnu
     //https://www.geeksforgeeks.org/equation-of-circle-when-three-points-on-the-circle-are-given/
-
     static float getAngle(Vector2 point1, Vector2 point2, Vector2 point3, boolean isThumb) {
         float x12 = (float) point1.x - (float) point2.x;
         float x13 = (float) point1.x - (float) point3.x;
