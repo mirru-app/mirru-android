@@ -5,7 +5,7 @@ at an angle from 0 to 180 degrees. 0 means the finger is full upright and
 To calculate the movement of the fingers, we first calculate the direction vector of the fingers 
 by subtracting the 3d point at the base of the finger and the 3d point at the tip of the finger.
 
-![finger direction](./img/finger-direction.png)
+![finger direction](./img/finger-dir.png)
 
 Then we calculate the palm normal by getting the three points in the palm, 
 calculating the vectors for side 1 and side 2, and getting the cross product
@@ -31,7 +31,7 @@ However, they are testing with a more simplistic prosthetic and we need somethin
 Problem: How can we calculate the movement of the thumb to move precisely for different grips? The thumb on the prosthetic is
 only able to move in and out and stops at a full 180 at the middle finger.
 
-![thumb](thumb.png)
+![thumb](./img/thumb.png)
 
 
 ```
