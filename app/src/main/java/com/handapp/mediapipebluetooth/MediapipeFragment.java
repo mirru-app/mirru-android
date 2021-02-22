@@ -310,6 +310,7 @@ public class MediapipeFragment extends Fragment {
 
         Vector3 palm0 = null;
         Vector3 palm5 = null;
+        Vector3 palm13 = null;
         Vector3 palm17 = null;;
 
         Vector3 thumb1 = null;
@@ -360,6 +361,10 @@ public class MediapipeFragment extends Fragment {
                     ring1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
+                if (landmarkIndex == 13) {
+                    palm13 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+
                 if (landmarkIndex == 14) {
                     ring2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
@@ -372,7 +377,7 @@ public class MediapipeFragment extends Fragment {
             }
 
             Vector3 palmNormal = FingerAngles.getNormal(palm0, palm5, palm17);
-            Vector3 thumbNormal = FingerAngles.getNormal(thumb1, palm0, palm5);
+            Vector3 thumbNormal = FingerAngles.getThumbNormal(palm0, palm13, palm17, palm5); //0-> 13 and 17-> 5
 
             double thumbAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(thumb1, thumb2), thumbNormal, true);
             double indexAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(index1, index2), palmNormal, false);

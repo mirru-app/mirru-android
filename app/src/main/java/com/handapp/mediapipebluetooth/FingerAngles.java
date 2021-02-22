@@ -34,6 +34,20 @@ public class FingerAngles {
         return normal;
     }
 
+    public static Vector3 getThumbNormal(Vector3 A, Vector3 B, Vector3 C, Vector3 D) {
+        B.sub(A);
+        Vector3 side1 = B;
+
+        D.sub(C);
+        Vector3 side2 = D;
+
+        side1.crossProduct(side2);
+
+        Vector3 normal = new Vector3(side1.toNormal());
+        return normal;
+    }
+
+
     public static double servoAngle(Vector3 fingerDir, Vector3 normal, boolean isThumb) {
         //angle calculation by:
         //https://www.instructables.com/Robotic-Hand-controlled-by-Gesture-with-Arduino-Le/
@@ -47,7 +61,7 @@ public class FingerAngles {
         if (!isThumb) {
             servoAngle = (160 - (100 - angle_degrees) * 1.8); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
         } else {
-            servoAngle = (80-(100-angle_degrees)*2.5);; // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
+            servoAngle = (80-(100-angle_degrees)*1.5);; // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
         }
 
         if(servoAngle < 1)
