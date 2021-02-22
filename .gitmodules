@@ -1,0 +1,3 @@
+[submodule "third_party/vectorz"]
+	path = third_party/vectorz
+	url = https://github.com/mikera/vectorz.git
