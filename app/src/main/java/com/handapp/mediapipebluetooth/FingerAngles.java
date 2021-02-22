@@ -21,33 +21,33 @@ public class FingerAngles {
         return direction;
     }
 
-    public static Vector3 calcPalmNormal(Vector3 palm0, Vector3 palm5, Vector3 palm17) {
-        palm5.sub(palm0);
-        Vector3 side1 = palm5;
+    public static Vector3 getNormal(Vector3 A, Vector3 B, Vector3 C) {
+        B.sub(A);
+        Vector3 side1 = B;
 
-        palm17.sub(palm0);
-        Vector3 side2 = palm17;
+        C.sub(A);
+        Vector3 side2 = C;
 
         side1.crossProduct(side2);
 
-        Vector3 palmNormal = new Vector3(side1.toNormal());
-        return palmNormal;
+        Vector3 normal = new Vector3(side1.toNormal());
+        return normal;
     }
 
-    public static double servoAngle(Vector3 fingerDir, Vector3 palmNormal, boolean isThumb) {
+    public static double servoAngle(Vector3 fingerDir, Vector3 normal, boolean isThumb) {
         //angle calculation by:
         //https://www.instructables.com/Robotic-Hand-controlled-by-Gesture-with-Arduino-Le/
-        double scalarProduct = palmNormal.x * fingerDir.x + palmNormal.y * fingerDir.y + palmNormal.z * fingerDir.z;
-        double palm_module = Math.sqrt(palmNormal.x * palmNormal.x + palmNormal.y * palmNormal.y + palmNormal.z * palmNormal.z);
+        double scalarProduct = normal.x * fingerDir.x + normal.y * fingerDir.y + normal.z * fingerDir.z;
+        double palm_module = Math.sqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
         double finger_module = Math.sqrt(fingerDir.x * fingerDir.x + fingerDir.y * fingerDir.y + fingerDir.z * fingerDir.z);
         double angle_radians = Math.acos(scalarProduct / (palm_module * finger_module));
         double angle_degrees = angle_radians * 180 / Math.PI;
 
         double servoAngle;
         if (!isThumb) {
-            servoAngle = (160 - (100 - angle_degrees) * 1.5); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
+            servoAngle = (160 - (100 - angle_degrees) * 1.8); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
         } else {
-            servoAngle = (20+(100-angle_degrees)*1.5);; // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
+            servoAngle = (80-(100-angle_degrees)*2.5);; // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
         }
 
         if(servoAngle < 1)

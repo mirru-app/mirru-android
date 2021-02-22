@@ -158,9 +158,9 @@ public class MediapipeFragment extends Fragment {
                     List<NormalizedLandmarkList> multiHandLandmarks =
                             PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
                     if (timerRunning) {
-                        String data = getCirclesOfFingersString(multiHandLandmarks);
+                        String data = getAnglesOfFingersString(multiHandLandmarks);
                         mediapipeInterface.sendDataFromMedipipe(data);
-                        Log.i(TAG, "" + getCirclesOfFingersString(multiHandLandmarks));
+                        Log.i(TAG, "" + getAnglesOfFingersString(multiHandLandmarks));
                     } else {
                         return;
                     }
@@ -313,13 +313,13 @@ public class MediapipeFragment extends Fragment {
         Vector3 palm17 = null;;
 
         Vector3 thumb1 = null;
-        Vector3 thumb3 = null;
-        Vector3 index5 = null;
-        Vector3 index6 = null;
-        Vector3 mid9 = null;
-        Vector3 mid10 = null;
-        Vector3 ring13 = null;
-        Vector3 ring14 = null;
+        Vector3 thumb2 = null;
+        Vector3 index1 = null;
+        Vector3 index2 = null;
+        Vector3 mid1 = null;
+        Vector3 mid2 = null;
+        Vector3 ring1 = null;
+        Vector3 ring2 = null;
 
         for (NormalizedLandmarkList landmarks : multiHandLandmarks)  {
             int landmarkIndex = 0;
@@ -332,8 +332,8 @@ public class MediapipeFragment extends Fragment {
                     thumb1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
-                if (landmarkIndex == 3) {
-                    thumb3 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                if (landmarkIndex == 4) {
+                    thumb2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 5) {
@@ -341,27 +341,27 @@ public class MediapipeFragment extends Fragment {
                 }
 
                 if (landmarkIndex == 5) {
-                    index5 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    index1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 6) {
-                    index6 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    index2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 9) {
-                    mid9 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    mid1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 10) {
-                    mid10 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    mid2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 13) {
-                    ring13 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    ring1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 14) {
-                    ring14 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    ring2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 17) {
@@ -371,11 +371,13 @@ public class MediapipeFragment extends Fragment {
                 ++landmarkIndex;
             }
 
-            Vector3 PalmNormal = FingerAngles.calcPalmNormal(palm0, palm5, palm17);
-            double thumbAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(palm0, thumb3), PalmNormal, true);
-            double indexAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(index5, index6), PalmNormal, false);
-            double midAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(mid9, mid10), PalmNormal, false);
-            double ringAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(ring13, ring14), PalmNormal, false);
+            Vector3 palmNormal = FingerAngles.getNormal(palm0, palm5, palm17);
+            Vector3 thumbNormal = FingerAngles.getNormal(thumb1, palm0, palm5);
+
+            double thumbAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(thumb1, thumb2), thumbNormal, true);
+            double indexAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(index1, index2), palmNormal, false);
+            double midAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(mid1, mid2), palmNormal, false);
+            double ringAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(ring1, ring2), palmNormal, false);
 
             fingerValuesString = (int)thumbAngle + "," + (int)indexAngle + "," + (int)midAngle + "," + (int)ringAngle;
             ++handIndex;
