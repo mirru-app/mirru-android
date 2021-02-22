@@ -1,2 +1,10 @@
 include ':app'
+include 'third_party:compat:vectorz'
+
 rootProject.name='MediaPipeMultiHandsTrackingApp'
+
+// sourceControl {
+//     gitRepository("https://github.com/mikera/vectorz") {
+//         producesModule("net.mikera:vectorz")
+//     }
+// }
