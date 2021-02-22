@@ -5,19 +5,19 @@ at an angle from 0 to 180 degrees. 0 means the finger is full upright and
 To calculate the movement of the fingers, we first calculate the direction vector of the fingers 
 by subtracting the 3d point at the base of the finger and the 3d point at the tip of the finger.
 
-![finger direction](finger-direction.png)
+![finger direction](./img/finger-direction.png)
 
 Then we calculate the palm normal by getting the three points in the palm, 
 calculating the vectors for side 1 and side 2, and getting the cross product
 of those vectors.
 
-![palm normal](palm-normal.png)
+![palm normal](./img/palm-normal.png)
 
 Finally we compute the angle of the finger direction and the palm normal in the 
 servoAngle method. This returns the angle in radians and we calculate the degrees
 with that.
 
-![angle](angle.png)
+![angle](./img/angle.png)
 
 Once we have the estimated angle, there is this calculation which is then done on the angle to fine-tune it. It was taken
 from someone else's project and we aren't sure what it means. It seems to work well. Its the following:
