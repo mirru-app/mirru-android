@@ -87,6 +87,8 @@ public class MediapipeFragment extends Fragment {
     private Context context;
     private boolean timerRunning;
 
+    int counter;
+
     public static MediapipeFragment newInstance() {
         return new MediapipeFragment();
     }
@@ -157,14 +159,23 @@ public class MediapipeFragment extends Fragment {
                 (packet) -> {
                     List<NormalizedLandmarkList> multiHandLandmarks =
                             PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
-                    if (timerRunning) {
-                        String data = getAnglesOfFingersString(multiHandLandmarks);
-                        mediapipeInterface.sendDataFromMedipipe(data);
-                        Log.i(TAG, "" + getAnglesOfFingersString(multiHandLandmarks));
-                    } else {
-                        return;
-                    }
+                    sendDataToBluetooth(multiHandLandmarks);
                 });
+    }
+
+    public void sendDataToBluetooth(List<NormalizedLandmarkList> multiHandLandmarks) {
+        counter +=1;
+
+        if (counter > 1) {
+            if (timerRunning) {
+                String data = getAnglesOfFingersString(multiHandLandmarks);
+                mediapipeInterface.sendDataFromMedipipe(data);
+                Log.i(TAG, "" + getAnglesOfFingersString(multiHandLandmarks));
+            } else {
+                return;
+            }
+            counter = 0;
+        }
     }
 
     @Override
@@ -345,7 +356,7 @@ public class MediapipeFragment extends Fragment {
                     index1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
-                if (landmarkIndex == 6) {
+                if (landmarkIndex == 8) {
                     index2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
@@ -353,7 +364,7 @@ public class MediapipeFragment extends Fragment {
                     mid1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
-                if (landmarkIndex == 10) {
+                if (landmarkIndex == 12) {
                     mid2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
@@ -365,7 +376,7 @@ public class MediapipeFragment extends Fragment {
                     palm13 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
-                if (landmarkIndex == 14) {
+                if (landmarkIndex == 16) {
                     ring2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 

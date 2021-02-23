@@ -12,7 +12,6 @@ import mikera.matrixx.impl.VectorMatrixM3;
 import mikera.vectorz.Vector;
 import mikera.vectorz.Vector3;
 
-
 public class FingerAngles {
     public static Vector3 fingerDir(Vector3 startingPoint, Vector3 terminalPoint) {
         terminalPoint.sub(startingPoint);
@@ -59,15 +58,10 @@ public class FingerAngles {
 
         double servoAngle;
         if (!isThumb) {
-            servoAngle = (160 - (100 - angle_degrees) * 1.8); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
+            servoAngle = (130 + (100 - angle_degrees) * 1.5); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
         } else {
-            servoAngle = (80-(100-angle_degrees)*1.5);; // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
+            servoAngle = (30+(10+angle_degrees) * 1.2); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
         }
-
-        if(servoAngle < 1)
-            servoAngle = 1;
-        else if (servoAngle > 180)
-            servoAngle = 180;
 
         return servoAngle;
     }
@@ -75,5 +69,10 @@ public class FingerAngles {
     public double map(double value, double start1, double stop1, double start2, double stop2) {
         double mappedValue = (value - start1) / (stop1 - start1) * (stop2 - start2) + start2;
         return mappedValue;
+    }
+
+    static float getAvg(float prev_avg, float x, int n)
+    {
+        return (prev_avg * n + x) / (n + 1);
     }
 }
