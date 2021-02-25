@@ -2,15 +2,67 @@
 package com.handapp.mediapipebluetooth;
 
 import java.text.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import mikera.arrayz.Array;
+import mikera.matrixx.Matrix;
+import mikera.matrixx.impl.IdentityMatrix;
 import mikera.vectorz.Vector2;
+import mikera.vectorz.Vector3;
 
 class FingerCircles
 {
-
-    static Vector2[] rotatePoints(Vector2 normal, Vector2 point1, Vector2 point2, Vector2 point3) {
+    static List rotatePoints(Vector3 rotateToNormal, Vector3 point1, Vector3 point2, Vector3 point3) {
         // Rotate points 1, 2, and 3 into the plane defined by normal
-        // returning the three rotated points     
-        return Vector2(0.0, 0.0, 0.0);
+        // returning the three rotated points
+        point2.sub(point1);
+        Vector3 v1 = point2;
+
+        point3.sub(point2);
+        Vector3 v2 = point3;
+
+        v1.crossProduct(v2);
+        Vector3 unnormalized = v1;
+
+        Vector3 normal = unnormalized.toNormal();
+
+        Vector3 v = normal;
+        v.crossProduct(rotateToNormal.toVector());
+        double[] vArray = v.toDoubleArray();
+
+        double s = v.normalise();
+        double c = normal.dotProduct(rotateToNormal.toVector());
+
+        double[][] skewMatArray = {
+                {0, -1*vArray[2], vArray[1]},
+                {vArray[2],    0,       -1*vArray[0]},
+                {-1*vArray[1], vArray[0],    0}
+        };
+
+        Matrix skewMat = Matrix.create(skewMatArray);
+
+        Matrix skewMatMultiplied = Matrix.create(skewMatArray);
+        skewMatMultiplied.innerProduct(skewMat);
+        skewMatMultiplied.innerProduct((1-c)/(s*s));
+
+        Matrix rotationMatrix = Matrix.create(3,3);
+        rotationMatrix.add(IdentityMatrix.create(3));
+        rotationMatrix.add(skewMat);
+        rotationMatrix.add(skewMatMultiplied);
+
+        Matrix inverseRotationMatrix = rotationMatrix.toMatrixTranspose();
+
+        Vector3 rp1 = Vector3.create(rotationMatrix.innerProduct(point1).toVector());
+        Vector3 rp2 = Vector3.create(rotationMatrix.innerProduct(point2).toVector());
+        Vector3 rp3 = Vector3.create(rotationMatrix.innerProduct(point3).toVector());
+
+        Vector3[] vectors = new Vector3[] {rp1, rp2, rp3};
+        List results = new ArrayList();
+        results.add(inverseRotationMatrix);
+        results.add(vectors);
+
+        return results;
     }
 
     // Function to find the circle on
