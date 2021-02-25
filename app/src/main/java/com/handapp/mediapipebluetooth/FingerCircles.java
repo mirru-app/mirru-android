@@ -6,6 +6,13 @@ import mikera.vectorz.Vector2;
 
 class FingerCircles
 {
+
+    static Vector2[] rotatePoints(Vector2 normal, Vector2 point1, Vector2 point2, Vector2 point3) {
+        // Rotate points 1, 2, and 3 into the plane defined by normal
+        // returning the three rotated points     
+        return Vector2(0.0, 0.0, 0.0);
+    }
+
     // Function to find the circle on
     // which the given three points lie
     // This code is contributed by chandan_jnu
