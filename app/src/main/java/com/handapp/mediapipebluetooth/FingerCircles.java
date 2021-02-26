@@ -13,7 +13,7 @@ import mikera.vectorz.Vector3;
 
 class FingerCircles
 {
-    static List rotatePoints(Vector3 rotateToNormal, Vector3 point1, Vector3 point2, Vector3 point3) {
+    static List rotatePoints(Vector3 point1, Vector3 point2, Vector3 point3) {
         // Rotate points 1, 2, and 3 into the plane defined by normal
         // returning the three rotated points
         point2.sub(point1);
@@ -28,7 +28,9 @@ class FingerCircles
         Vector3 normal = unnormalized.toNormal();
 
         Vector3 v = normal;
-        v.crossProduct(rotateToNormal.toVector());
+
+        Vector3 rotateToNormal = Vector3.of(0, 0, 1);
+        v.crossProduct(rotateToNormal);
         double[] vArray = v.toDoubleArray();
 
         double s = v.normalise();

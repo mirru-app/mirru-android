@@ -22,13 +22,13 @@ public class FingerCirclesTests {
         // p3 -> (1, 0, 0)
         // normal -> (1, 0, 0)
 
-        // rp1 -> (0, 0, 1)
+        // rp1 -> (0, 0, -1)
         // rp2 -> (0, 1, 0)
-        // rp3 -> (0, 0, -1)
+        // rp3 -> (0, 0, 1)
 
-        List rotated = FingerCircles.rotatePoints(Vector3.of(1, 0, 0), Vector3.of(-1, 0, 0), Vector3.of(0, 1, 0), Vector3.of(0,0,-1));
+        List rotated = FingerCircles.rotatePoints(Vector3.of(-1, 0, 0), Vector3.of(0, 1, 0), Vector3.of(1,0,0));
         Vector3[] rotatedPoints = (Vector3[])rotated.get(1);
-        Vector3[] expectedArray = new Vector3[] {Vector3.of(0,0,1), Vector3.of(0,1,0), Vector3.of(0,0,-1)};
+        Vector3[] expectedArray = new Vector3[] {Vector3.of(0,0,-1), Vector3.of(0,1,0), Vector3.of(0,0,1)};
         assertArrayEquals(expectedArray, rotatedPoints);
     }
 }
