@@ -8,6 +8,7 @@ import java.util.List;
 import mikera.arrayz.Array;
 import mikera.matrixx.Matrix;
 import mikera.matrixx.impl.IdentityMatrix;
+import mikera.vectorz.Vector;
 import mikera.vectorz.Vector2;
 import mikera.vectorz.Vector3;
 
@@ -36,6 +37,12 @@ class FingerCircles
         double s = v.normalise();
         double c = normal.dotProduct(rotateToNormal.toVector());
 
+        System.out.println("C " + c);
+        System.out.println("V " + vArray[0]);
+        System.out.println("V " + vArray[1]);
+        System.out.println("V " + vArray[2]);
+        System.out.println("S " + s);
+
         double[][] skewMatArray = {
                 {0, -1*vArray[2], vArray[1]},
                 {vArray[2],    0,       -1*vArray[0]},
@@ -44,20 +51,39 @@ class FingerCircles
 
         Matrix skewMat = Matrix.create(skewMatArray);
 
-        Matrix skewMatMultiplied = Matrix.create(skewMatArray);
-        skewMatMultiplied.innerProduct(skewMat);
-        skewMatMultiplied.innerProduct((1-c)/(s*s));
+        System.out.println("skewMat " + skewMat);
 
-        Matrix rotationMatrix = Matrix.create(3,3);
+        Matrix skewMatMultiplied = Matrix.create(skewMatArray);
+        skewMatMultiplied.mul(skewMat);
+
+        System.out.println("skewMat Multiplied " + skewMatMultiplied);
+
+        Matrix rotationMatrix = Matrix.create(skewMat);
         rotationMatrix.add(IdentityMatrix.create(3));
-        rotationMatrix.add(skewMat);
         rotationMatrix.add(skewMatMultiplied);
+        skewMatMultiplied.multiply((1-c)/(s*s));
+
+        System.out.println("rotation matrix: " + rotationMatrix);
 
         Matrix inverseRotationMatrix = rotationMatrix.toMatrixTranspose();
 
-        Vector3 rp1 = Vector3.create(rotationMatrix.innerProduct(point1).toVector());
-        Vector3 rp2 = Vector3.create(rotationMatrix.innerProduct(point2).toVector());
-        Vector3 rp3 = Vector3.create(rotationMatrix.innerProduct(point3).toVector());
+        System.out.println("inverseRotationMatrix: " + inverseRotationMatrix);
+
+        point1.toVector();
+        point2.toVector();
+        point3.toVector();
+
+        Vector rotPoint1 = rotationMatrix.innerProduct(point1.toVector());
+        Vector rotPoint2 = rotationMatrix.innerProduct(point2.toVector());
+        Vector rotPoint3 = rotationMatrix.innerProduct(point3.toVector());
+
+        Vector3 rp1 = Vector3.of(rotPoint1.get(0), rotPoint1.get(1), rotPoint1.get(2));
+        Vector3 rp2 = Vector3.of(rotPoint2.get(0), rotPoint2.get(1), rotPoint2.get(2));
+        Vector3 rp3 = Vector3.of(rotPoint3.get(0), rotPoint3.get(1), rotPoint3.get(2));
+
+        System.out.println("rp1: " + rp1);
+        System.out.println("rp2: " + rp2);
+        System.out.println("rp3: " + rp3);
 
         Vector3[] vectors = new Vector3[] {rp1, rp2, rp3};
         List results = new ArrayList();
