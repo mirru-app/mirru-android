@@ -17,13 +17,17 @@ class FingerCircles
     static List rotatePoints(Vector3 point1, Vector3 point2, Vector3 point3) {
         // Rotate points 1, 2, and 3 into the plane defined by normal
         // returning the three rotated points
-        point2.sub(point1);
-        Vector3 v1 = point2;
+        Vector3 p1 = point1;
+        Vector3 p2 = point2;
+        Vector3 p3 = point3;
 
-        point3.sub(point2);
-        Vector3 v2 = point3;
+        p2.sub(p1);
+        Vector3 v1 = p2;
 
+        p3.sub(p2);
+        Vector3 v2 = p3;
         v1.crossProduct(v2);
+
         Vector3 unnormalized = v1;
 
         Vector3 normal = unnormalized.toNormal();
@@ -69,21 +73,21 @@ class FingerCircles
 
         System.out.println("inverseRotationMatrix: " + inverseRotationMatrix);
 
-        point1.toVector();
-        point2.toVector();
-        point3.toVector();
+        Vector rotRow0 = rotationMatrix.getRow(0).toVector();
+        Vector rotRow1 = rotationMatrix.getRow(1).toVector();
+        Vector rotRow2 = rotationMatrix.getRow(2).toVector();
 
-        Vector rotPoint1 = rotationMatrix.innerProduct(point1.toVector());
-        Vector rotPoint2 = rotationMatrix.innerProduct(point2.toVector());
-        Vector rotPoint3 = rotationMatrix.innerProduct(point3.toVector());
-
-        Vector3 rp1 = Vector3.of(rotPoint1.get(0), rotPoint1.get(1), rotPoint1.get(2));
-        Vector3 rp2 = Vector3.of(rotPoint2.get(0), rotPoint2.get(1), rotPoint2.get(2));
-        Vector3 rp3 = Vector3.of(rotPoint3.get(0), rotPoint3.get(1), rotPoint3.get(2));
+        Vector3 rp1 = Vector3.of(rotRow0.get(0) * point1.x, rotRow0.get(1) * point1.y, rotRow0.get(2) * point1.z);
+        Vector3 rp2 = Vector3.of(rotRow1.get(0) * point2.x, rotRow1.get(1) * point2.y, rotRow1.get(1) * point2.z);
+        Vector3 rp3 = Vector3.of(rotRow2.get(0) * point3.x, rotRow2.get(1) * point3.y, rotRow2.get(2) * point3.z);
 
         System.out.println("rp1: " + rp1);
         System.out.println("rp2: " + rp2);
         System.out.println("rp3: " + rp3);
+
+        System.out.println("point1a: " + p1a);
+        System.out.println("point2a: " + p2a);
+        System.out.println("point3a: " + p3a);
 
         Vector3[] vectors = new Vector3[] {rp1, rp2, rp3};
         List results = new ArrayList();
