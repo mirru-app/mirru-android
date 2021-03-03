@@ -408,70 +408,81 @@ public class MediapipeFragment extends Fragment {
         String fingerCirclesString = null;
         int handIndex = 0;
 
-        Vector2 thumb1 = null, thumb2 = null, thumb3 = null;
-        Vector2 index1 = null, index2 = null, index3 = null;
-        Vector2 mid1 = null, mid2 = null, mid3 = null;
-        Vector2 ring1 = null, ring2 = null, ring3 = null;
+        Vector3 thumb1 = null, thumb2 = null, thumb3 = null;
+        Vector3 index1 = null, index2 = null, index3 = null;
+        Vector3 mid1 = null, mid2 = null, mid3 = null;
+        Vector3 ring1 = null, ring2 = null, ring3 = null;
 
         for (NormalizedLandmarkList landmarks : multiHandLandmarks)  {
             int landmarkIndex = 0;
             for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
 
                 if (landmarkIndex == 2) {
-                    thumb1 = Vector2.of(landmark.getX(), landmark.getY());
+                    thumb1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 3) {
-                    thumb2 = Vector2.of(landmark.getX(), landmark.getY());
+                    thumb2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 4) {
-                    thumb3 = Vector2.of(landmark.getX(), landmark.getY());
+                    thumb3 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 6) {
-                    index1 = Vector2.of(landmark.getX(), landmark.getY());
+                    index1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 7) {
-                    index2 = Vector2.of(landmark.getX(), landmark.getY());
+                    index2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 8) {
-                    index3 = Vector2.of(landmark.getX(), landmark.getY());
+                    index3 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 10) {
-                    mid1 = Vector2.of(landmark.getX(), landmark.getY());
+                    mid1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 11) {
-                    mid2 = Vector2.of(landmark.getX(), landmark.getY());
+                    mid2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 12) {
-                    mid3 = Vector2.of(landmark.getX(), landmark.getY());
+                    mid3 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 14) {
-                    ring1 = Vector2.of(landmark.getX(), landmark.getY());
+                    ring1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 15) {
-                    ring2 = Vector2.of(landmark.getX(), landmark.getY());
+                    ring2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 16) {
-                    ring3 = Vector2.of(landmark.getX(), landmark.getY());
+                    ring3 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 ++landmarkIndex;
             }
 
-            double thumbAngle = FingerCircles.getAngle(thumb1, thumb2, thumb3, true);
-            double indexAngle = FingerCircles.getAngle(index1, index2, index3, false);
-            double midAngle = FingerCircles.getAngle(mid1, mid2, mid3, false);
-            double ringAngle = FingerCircles.getAngle(ring1, ring2, ring3, false);
+            List rotatedThumb = FingerCircles.rotatePoints(thumb1, thumb2, thumb3);
+            Vector3[] rotatedPointsThumb = (Vector3[])rotatedThumb.get(1);
+            float thumbAngle = FingerCircles.getAngle(rotatedPointsThumb[0], rotatedPointsThumb[1], rotatedPointsThumb[2], true);
+
+            List rotatedI = FingerCircles.rotatePoints(index1, index2, index3);
+            Vector3[] rotatedPointsI = (Vector3[])rotatedI.get(1);
+            float indexAngle = FingerCircles.getAngle(rotatedPointsI[0], rotatedPointsI[1], rotatedPointsI[2], true);
+
+            List rotatedM = FingerCircles.rotatePoints(mid1, mid2, mid3);
+            Vector3[] rotatedPointsM = (Vector3[])rotatedM.get(1);
+            float midAngle = FingerCircles.getAngle(rotatedPointsM[0], rotatedPointsM[1], rotatedPointsM[2], true);
+
+            List rotatedR = FingerCircles.rotatePoints(ring1, ring2, ring3);
+            Vector3[] rotatedPointsR = (Vector3[])rotatedR.get(1);
+            float ringAngle = FingerCircles.getAngle(rotatedPointsR[0], rotatedPointsR[1], rotatedPointsR[2], true);
 
             fingerCirclesString = (int)thumbAngle + "," + (int)indexAngle + "," + (int)midAngle + "," + (int)ringAngle;
             ++handIndex;
