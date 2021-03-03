@@ -272,21 +272,21 @@ public class MainActivity extends AppCompatActivity {
             return "No hand landmarks";
         }
         String fingerCirclesString = null;
-        Vector2 thumb1 = null;
-        Vector2 thumb2 = null;
-        Vector2 thumb3 = null;
+        Vector3 thumb1 = null;
+        Vector3 thumb2 = null;
+        Vector3 thumb3 = null;
 
-        Vector2 index1 = null;
-        Vector2 index2 = null;
-        Vector2 index3 = null;
+        Vector3 index1 = null;
+        Vector3 index2 = null;
+        Vector3 index3 = null;
 
-        Vector2 mid1 = null;
-        Vector2 mid2 = null;
-        Vector2 mid3 = null;
+        Vector3 mid1 = null;
+        Vector3 mid2 = null;
+        Vector3 mid3 = null;
 
-        Vector2 ring1 = null;
-        Vector2 ring2 = null;
-        Vector2 ring3 = null;
+        Vector3 ring1 = null;
+        Vector3 ring2 = null;
+        Vector3 ring3 = null;
 
         List<Float> thumbAngleList = new ArrayList<>();
         List<Float> indexAngleList = new ArrayList<>();
@@ -297,21 +297,37 @@ public class MainActivity extends AppCompatActivity {
 
             int max = 10;
             for (int i = 0; i < max; i++) {
-                thumb1 = Vector2.of(landmarks.getLandmark(2).getX(), landmarks.getLandmark(2).getX());
-                thumb2 = Vector2.of(landmarks.getLandmark(3).getX(), landmarks.getLandmark(3).getY());
-                thumb3 = Vector2.of(landmarks.getLandmark(4).getX(), landmarks.getLandmark(4).getY());
+                thumb1 = Vector3.of(landmarks.getLandmark(2).getX(), landmarks.getLandmark(2).getY(), landmarks.getLandmark(2).getZ());
+                thumb2 = Vector3.of(landmarks.getLandmark(3).getX(), landmarks.getLandmark(3).getY(), landmarks.getLandmark(3).getZ());
+                thumb3 = Vector3.of(landmarks.getLandmark(4).getX(), landmarks.getLandmark(4).getY(), landmarks.getLandmark(4).getZ());
 
-                index1 = Vector2.of(landmarks.getLandmark(6).getX(), landmarks.getLandmark(6).getX());
-                index2 = Vector2.of(landmarks.getLandmark(7).getX(), landmarks.getLandmark(7).getY());
-                index3 = Vector2.of(landmarks.getLandmark(8).getX(), landmarks.getLandmark(8).getY());
+                index1 = Vector3.of(landmarks.getLandmark(6).getX(), landmarks.getLandmark(6).getY(), landmarks.getLandmark(6).getZ());
+                index2 = Vector3.of(landmarks.getLandmark(7).getX(), landmarks.getLandmark(7).getY(), landmarks.getLandmark(7).getZ());
+                index3 = Vector3.of(landmarks.getLandmark(8).getX(), landmarks.getLandmark(8).getY(), landmarks.getLandmark(8).getZ());
 
-                mid1 = Vector2.of(landmarks.getLandmark(10).getX(), landmarks.getLandmark(10).getX());
-                mid2 = Vector2.of(landmarks.getLandmark(11).getX(), landmarks.getLandmark(11).getY());
-                mid3 = Vector2.of(landmarks.getLandmark(12).getX(), landmarks.getLandmark(12).getY());
+                mid1 = Vector3.of(landmarks.getLandmark(10).getX(), landmarks.getLandmark(10).getY(), landmarks.getLandmark(10).getZ());
+                mid2 = Vector3.of(landmarks.getLandmark(11).getX(), landmarks.getLandmark(11).getY(), landmarks.getLandmark(11).getZ());
+                mid3 = Vector3.of(landmarks.getLandmark(12).getX(), landmarks.getLandmark(12).getY(), landmarks.getLandmark(12).getZ());
 
-                ring1 = Vector2.of(landmarks.getLandmark(14).getX(), landmarks.getLandmark(14).getX());
-                ring2 = Vector2.of(landmarks.getLandmark(15).getX(), landmarks.getLandmark(15).getY());
-                ring3 = Vector2.of(landmarks.getLandmark(16).getX(), landmarks.getLandmark(16).getY());
+                ring1 = Vector3.of(landmarks.getLandmark(14).getX(), landmarks.getLandmark(14).getY(), landmarks.getLandmark(14).getZ());
+                ring2 = Vector3.of(landmarks.getLandmark(15).getX(), landmarks.getLandmark(15).getY(), landmarks.getLandmark(15).getZ());
+                ring3 = Vector3.of(landmarks.getLandmark(16).getX(), landmarks.getLandmark(16).getY(), landmarks.getLandmark(16).getZ());
+
+                List rotatedThumb = FingerCircles.rotatePoints(thumb1, thumb2, thumb3);
+                Vector3[] rotatedPointsThumb = (Vector3[])rotatedThumb.get(1);
+                thumbAngleList.add(FingerCircles.getAngle(rotatedPointsThumb[0], rotatedPointsThumb[1], rotatedPointsThumb[2], true));
+
+                List rotatedI = FingerCircles.rotatePoints(index1, index2, index3);
+                Vector3[] rotatedPointsI = (Vector3[])rotatedI.get(1);
+                thumbAngleList.add(FingerCircles.getAngle(rotatedPointsI[0], rotatedPointsI[1], rotatedPointsI[2], true));
+
+                List rotatedM = FingerCircles.rotatePoints(mid1, mid2, mid3);
+                Vector3[] rotatedPointsM = (Vector3[])rotatedM.get(1);
+                thumbAngleList.add(FingerCircles.getAngle(rotatedPointsM[0], rotatedPointsM[1], rotatedPointsM[2], true));
+
+                List rotatedR = FingerCircles.rotatePoints(ring1, ring2, ring3);
+                Vector3[] rotatedPointsR = (Vector3[])rotatedR.get(1);
+                thumbAngleList.add(FingerCircles.getAngle(rotatedPointsR[0], rotatedPointsR[1], rotatedPointsR[2], true));
 
                 thumbAngleList.add(FingerCircles.getAngle(thumb1, thumb2, thumb3, true));
                 indexAngleList.add(FingerCircles.getAngle(index1, index2, index3, false));

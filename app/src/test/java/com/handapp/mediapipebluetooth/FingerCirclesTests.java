@@ -30,14 +30,14 @@ public class FingerCirclesTests {
 
     @Test
     public void testRotatePoints() {
-        // p1 -> (-1, 0, 0)
-        // p2 -> (0, 1, 0)
-        // p3 -> (1, 0, 0)
-        // normal -> (1, 0, 0)
+        // p1 = [0, 0, -1]
+        // p2 = [0, 1, 0]
+        // p3 = [0, 0 1]
 
-        // rp1 -> (0, 0, -1)
-        // rp2 -> (0, 1, 0)
-        // rp3 -> (0, 0, 1)
+        // rp1=[1. 0. 0.]
+        // rp2=[0. 1. 0.]
+        // rp3=[-1.  0.  0.]
+
         Vector3 rp1 = Vector3.of(0, 0, -1);
         Vector3 rp2 = Vector3.of(0, 1, 0);
         Vector3 rp3 = Vector3.of(0, 0, 1);
