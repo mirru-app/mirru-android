@@ -57,11 +57,20 @@ public class FingerAngles {
         double angle_degrees = angle_radians * 180 / Math.PI;
 
         double servoAngle;
-        if (!isThumb) {
-            servoAngle = (130 + (100 - angle_degrees) * 1.5); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
+        if (MediapipeFragment.isHandLeft) {
+            if (!isThumb) {
+                servoAngle = (160 - (100 - angle_degrees) * 1.8); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
+            } else {
+                servoAngle = (80-(100-angle_degrees)*1.5);; // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
+            }
         } else {
-            servoAngle = (30+(10+angle_degrees) * 1.2); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
+            if (!isThumb) {
+                servoAngle = (130 + (100 - angle_degrees) * 1.5); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
+            } else {
+                servoAngle = (30+(10+angle_degrees) * 1.2); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
+            }
         }
+
 
         return servoAngle;
     }

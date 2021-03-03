@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -86,6 +87,8 @@ public class MediapipeFragment extends Fragment {
     //The context from the inflater
     private Context context;
     private boolean timerRunning;
+    private ToggleButton toggleHand;
+    public static boolean isHandLeft;
 
     int counter;
 
@@ -116,6 +119,20 @@ public class MediapipeFragment extends Fragment {
         }
 
         setupPreviewDisplayView(view);
+        toggleHand = view.findViewById(R.id.switchHandedness);
+
+        toggleHand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!toggleHand.isChecked()) {
+                    isHandLeft = true;
+                    System.out.println("isHandLeft: " + isHandLeft);
+                } else if (toggleHand.isChecked()){
+                    isHandLeft = false;
+                    System.out.println("isHandLeft: " + isHandLeft);
+                }
+            }
+        });
 
         return view;
     }
@@ -485,6 +502,7 @@ public class MediapipeFragment extends Fragment {
             float ringAngle = FingerCircles.getAngle(rotatedPointsR[0], rotatedPointsR[1], rotatedPointsR[2], true);
 
             fingerCirclesString = (int)thumbAngle + "," + (int)indexAngle + "," + (int)midAngle + "," + (int)ringAngle;
+            System.out.println(fingerCirclesString);
             ++handIndex;
         }
         return fingerCirclesString;
