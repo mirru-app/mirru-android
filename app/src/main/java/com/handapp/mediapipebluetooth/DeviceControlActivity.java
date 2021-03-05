@@ -222,13 +222,14 @@ public class DeviceControlActivity extends FragmentActivity
         for (BluetoothGattService gattService : gattServices) {
             HashMap<String, String> currentServiceData = new HashMap<String, String>();
             uuid = gattService.getUuid().toString();
+            Log.w(TAG, "uuidGatt " + uuid);
 
-            if (SampleGattAttributes.HEART_RATE_MEASUREMENT.equalsIgnoreCase(uuid)) {
+            if (SampleGattAttributes.HEART_RATE_MEASUREMENT.equals(uuid)) {
                 currentServiceData.put(
                         LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));
                 currentServiceData.put(LIST_UUID, uuid);
 
-                Log.w(TAG, "uuidGattServicedjafsdfsdfd " + uuid);
+                Log.w(TAG, "uuidjafsdfsdfd " + uuid);
                 gattServiceData.add(currentServiceData);
             }
 
@@ -244,8 +245,9 @@ public class DeviceControlActivity extends FragmentActivity
                 charas.add(gattCharacteristic);
                 HashMap<String, String> currentCharaData = new HashMap<String, String>();
                 uuid = gattCharacteristic.getUuid().toString();
+                Log.w(TAG, "uuidGattCharacteristicalsdjafsdfsdfd " + uuid);
 
-                if (SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG.equalsIgnoreCase(uuid)) {
+                if (SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG.equals(uuid)) {
                     currentCharaData.put(
                             LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));
                     currentCharaData.put(LIST_UUID, uuid);

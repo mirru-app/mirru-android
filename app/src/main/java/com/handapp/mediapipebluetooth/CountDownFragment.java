@@ -9,6 +9,8 @@ import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -28,6 +30,7 @@ public class CountDownFragment extends Fragment {
     }
 
     CountdownInterface countDownInterface;
+    RadioGroup radioGroup;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,12 @@ public class CountDownFragment extends Fragment {
         countDownText = view.findViewById(R.id.countdown_text);
         toggleButton = view.findViewById(R.id.toggleButton);
 
+        radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
+        RadioButton radio1 = (RadioButton) view.findViewById(R.id.time1);
+        RadioButton radio2 = (RadioButton) view.findViewById(R.id.time1);
+        RadioButton radio3 = (RadioButton) view.findViewById(R.id.time1);
+
+
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +62,25 @@ public class CountDownFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+
+        switch(view.getId()) {
+            case R.id.time1:
+                if (checked)
+                    System.out.println("1");
+                    break;
+            case R.id.time2:
+                if (checked)
+                    System.out.println("2");
+                    break;
+            case R.id.time3:
+                if (checked)
+                    System.out.println("3");
+                    break;
+        }
     }
 
     @Override

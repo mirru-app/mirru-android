@@ -27,30 +27,33 @@
         android:textSize="42sp"
         android:typeface="normal" />
 
-    <com.google.android.material.chip.ChipGroup
+    <RadioGroup
+        android:id="@+id/radioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"
-        android:layout_marginTop="80dp">
+        android:layout_margin="100dp">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip1"
+        <RadioButton
+            android:id="@+id/time1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/time1" />
+            android:text="@string/time1"
+            android:onClick="onRadioButtonClicked"/>
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip2"
+        <RadioButton
+            android:id="@+id/time2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/time2" />
+            android:text="@string/time2"
+            android:onClick="onRadioButtonClicked"/>
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip3"
+        <RadioButton
+            android:id="@+id/time3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/time3" />
-
-    </com.google.android.material.chip.ChipGroup>
+            android:text="@string/time3"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
 
 </FrameLayout>
