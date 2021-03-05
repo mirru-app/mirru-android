@@ -23,4 +23,9 @@
     <string name="unknown_service">Unknown service</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="time1">10s</string>
+    <string name="time2">20s</string>
+    <string name="time3">\infty </string>
+
 </resources>
