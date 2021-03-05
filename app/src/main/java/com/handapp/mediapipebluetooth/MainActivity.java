@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
-            int max = 30;
+            int max = 10;
             System.out.println(counter);
 
             thumb1 = Vector3.of(landmarks.getLandmark(2).getX(), landmarks.getLandmark(2).getY(), landmarks.getLandmark(2).getZ());
@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
             thumbList2.add(thumb2);
             thumbList3.add(thumb3);
 
-            index1 = Vector3.of(landmarks.getLandmark(6).getX(), landmarks.getLandmark(6).getY(), landmarks.getLandmark(6).getZ());
+            index1 = Vector3.of(landmarks.getLandmark(5).getX(), landmarks.getLandmark(5).getY(), landmarks.getLandmark(5).getZ());
             index2 = Vector3.of(landmarks.getLandmark(7).getX(), landmarks.getLandmark(7).getY(), landmarks.getLandmark(7).getZ());
             index3 = Vector3.of(landmarks.getLandmark(8).getX(), landmarks.getLandmark(8).getY(), landmarks.getLandmark(8).getZ());
             indexList1.add(index1);
@@ -342,7 +342,9 @@ public class MainActivity extends AppCompatActivity {
             ringList3.add(ring3);
 
             if (ringList1.size() == max) {
-                Vector3[] thumbArray1 = thumbList1.toArray(new Vector3[0]);
+                Vector3[] thumbArray1 = new Vector3[thumbList1.size()];
+                thumbList1.toArray(thumbArray1);
+                System.out.print("asdfsdf " + thumbArray1.length);
                 Vector3[] thumbArray2 = thumbList2.toArray(new Vector3[0]);
                 Vector3[] thumbArray3 = thumbList3.toArray(new Vector3[0]);
 
