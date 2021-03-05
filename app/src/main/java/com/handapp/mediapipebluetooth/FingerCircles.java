@@ -5,11 +5,9 @@ import java.text.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import mikera.arrayz.Array;
 import mikera.matrixx.Matrix;
 import mikera.matrixx.impl.IdentityMatrix;
 import mikera.vectorz.Vector;
-import mikera.vectorz.Vector2;
 import mikera.vectorz.Vector3;
 
 class FingerCircles
@@ -91,9 +89,9 @@ class FingerCircles
         Vector3 rp2 = Vector3.of(rotMatrix2.get(0), rotMatrix2.get(1), rotMatrix2.get(2));
         Vector3 rp3 = Vector3.of(rotMatrix3.get(0), rotMatrix3.get(1), rotMatrix3.get(2));
 
-        System.out.println(rp1);
-        System.out.println(rp2);
-        System.out.println(rp3);
+//        System.out.println(rp1);
+//        System.out.println(rp2);
+//        System.out.println(rp3);
 
         Vector3[] vectors = new Vector3[] {rp1, rp2, rp3};
         List results = new ArrayList();
