@@ -6,18 +6,20 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class CountDownFragment extends Fragment {
     private CountDownTimer countDownTimer;
     private boolean isTimerRunning = false;
-    private long startTimeInMilliseconds = 20000; //10 seconds
+    private long startTimeInMilliseconds; //10 seconds
     private ToggleButton toggleButton;
     private TextView countDownText;
 
@@ -30,25 +32,23 @@ public class CountDownFragment extends Fragment {
     }
 
     CountdownInterface countDownInterface;
-    RadioGroup radioGroup;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    RadioGroup radioGroup;
+    RadioButton radioButton;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.countdown_fragment, container, false);
+
+        radioGroup = view.findViewById(R.id.radioGroup);
         countDownText = view.findViewById(R.id.countdown_text);
         toggleButton = view.findViewById(R.id.toggleButton);
-
-        radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        RadioButton radio1 = (RadioButton) view.findViewById(R.id.time1);
-        RadioButton radio2 = (RadioButton) view.findViewById(R.id.time1);
-        RadioButton radio3 = (RadioButton) view.findViewById(R.id.time1);
-
 
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,26 +61,28 @@ public class CountDownFragment extends Fragment {
                 countDownInterface.sendCountdownState(isTimerRunning);
             }
         });
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton rb = (RadioButton) view.findViewById(checkedId);
+                switch(rb.getText().toString()) {
+                    case "10s":
+                        startTimeInMilliseconds = 11000;
+                        break;
+                    case "20s":
+                        startTimeInMilliseconds = 21000;
+                        break;
+                    case "infinite":
+                        startTimeInMilliseconds = 990000;
+                        break;
+                }
+                Log.w("w", "startTimeInMilliseconds " + startTimeInMilliseconds);
+                Log.w("w", "You Selected " + rb.getText());
+            }
+        });
         return view;
-    }
-
-    public void onRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-
-        switch(view.getId()) {
-            case R.id.time1:
-                if (checked)
-                    System.out.println("1");
-                    break;
-            case R.id.time2:
-                if (checked)
-                    System.out.println("2");
-                    break;
-            case R.id.time3:
-                if (checked)
-                    System.out.println("3");
-                    break;
-        }
     }
 
     @Override
@@ -91,7 +93,6 @@ public class CountDownFragment extends Fragment {
         } else {
             throw new RuntimeException(context.toString() + "must implement CountDownInterface");
         }
-
     }
 
     @Override

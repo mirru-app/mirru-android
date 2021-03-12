@@ -31,29 +31,23 @@
         android:id="@+id/radioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center|top"
-        android:layout_margin="100dp">
+        android:layout_centerInParent="true">
 
         <RadioButton
-            android:id="@+id/time1"
+            android:id="@+id/radio_one"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/time1"
-            android:onClick="onRadioButtonClicked"/>
-
+            android:text="10s" />
         <RadioButton
-            android:id="@+id/time2"
+            android:id="@+id/radio_two"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/time2"
-            android:onClick="onRadioButtonClicked"/>
-
+            android:text="20s" />
         <RadioButton
-            android:id="@+id/time3"
+            android:id="@+id/radio_three"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/time3"
-            android:onClick="onRadioButtonClicked"/>
+            android:text="infinite" />
     </RadioGroup>
 
 </FrameLayout>
