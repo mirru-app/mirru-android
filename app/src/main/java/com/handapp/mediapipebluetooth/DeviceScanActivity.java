@@ -192,11 +192,11 @@ public class DeviceScanActivity extends ListActivity {
         }
 
         public void addDevice(BluetoothDevice device) {
+            Log.i("tag", String.valueOf(device.getName()));
             if(!mLeDevices.contains(device)) {
-//                if (device.toString().equals("Brunel Hand")) {
+                if (device.getName() != null) {
                     mLeDevices.add(device);
-//                }
-                Log.i("devices", mLeDevices.toString());
+                }
             }
         }
 
@@ -238,6 +238,7 @@ public class DeviceScanActivity extends ListActivity {
             }
 
             BluetoothDevice device = mLeDevices.get(i);
+
             final String deviceName = device.getName();
             if (deviceName != null && deviceName.length() > 0)
                 viewHolder.deviceName.setText(deviceName);
