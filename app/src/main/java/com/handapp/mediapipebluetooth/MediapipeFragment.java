@@ -88,7 +88,7 @@ public class MediapipeFragment extends Fragment {
     private Context context;
     private boolean timerRunning;
     private ToggleButton toggleHand;
-    public static boolean isHandLeft;
+    public static boolean isHandLeft = true;
 
     int counter;
 

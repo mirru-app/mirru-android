@@ -19,7 +19,7 @@ import android.widget.ToggleButton;
 public class CountDownFragment extends Fragment {
     private CountDownTimer countDownTimer;
     private boolean isTimerRunning = false;
-    private long startTimeInMilliseconds; //10 seconds
+    private long startTimeInMilliseconds = 11000; //10 seconds
     private ToggleButton toggleButton;
     private TextView countDownText;
 
