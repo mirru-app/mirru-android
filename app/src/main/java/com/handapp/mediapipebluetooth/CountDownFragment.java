@@ -1,11 +1,16 @@
 package com.handapp.mediapipebluetooth;
 
 import android.content.Context;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +54,6 @@ public class CountDownFragment extends Fragment {
         radioGroup = view.findViewById(R.id.radioGroup);
         countDownText = view.findViewById(R.id.countdown_text);
         toggleButton = view.findViewById(R.id.toggleButton);
-
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +99,7 @@ public class CountDownFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof CountdownInterface) {
             countDownInterface = (CountdownInterface) context;
         } else {
@@ -113,6 +118,11 @@ public class CountDownFragment extends Fragment {
             @Override
             public void onTick(long millisUntilFinished) {
                 countDownText.setText("" + millisUntilFinished/1000);
+                if (millisUntilFinished < 1000) {
+                    ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+                    toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 1000);
+                    Log.w("tag", "timer done");
+                }
             }
 
             @Override
