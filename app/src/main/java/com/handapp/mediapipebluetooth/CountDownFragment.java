@@ -9,8 +9,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +18,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.google.android.material.chip.ChipGroup;
 
 public class CountDownFragment extends Fragment {
     private CountDownTimer countDownTimer;
@@ -45,6 +45,7 @@ public class CountDownFragment extends Fragment {
 
     RadioGroup radioGroup;
     RadioButton radioButton;
+    ChipGroup chipGroup;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,6 +55,8 @@ public class CountDownFragment extends Fragment {
         radioGroup = view.findViewById(R.id.radioGroup);
         countDownText = view.findViewById(R.id.countdown_text);
         toggleButton = view.findViewById(R.id.toggleButton);
+        chipGroup = (ChipGroup) view.findViewById(R.id.chipGroup);
+
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
