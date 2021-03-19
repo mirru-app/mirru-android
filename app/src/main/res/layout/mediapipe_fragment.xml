@@ -23,8 +23,8 @@
         android:id="@+id/preview_display_layout2"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_gravity="top|center"
-        android:layout_marginTop="100dp"
+        android:layout_gravity="top|left"
+        android:layout_marginTop="40dp"
         android:layout_weight="1" >
         <ToggleButton
             android:id="@+id/switchHandedness"
@@ -32,6 +32,7 @@
             android:layout_height="fill_parent"
             android:layout_gravity="top|left"
             android:text=""
+            android:checked="false"
             android:textOff="Left"
             android:textOn="Right" />
     </FrameLayout>

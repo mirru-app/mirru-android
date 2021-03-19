@@ -24,13 +24,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import java.io.UnsupportedEncodingException;
@@ -201,6 +209,7 @@ public class DeviceControlActivity extends FragmentActivity
                 onBackPressed();
                 return true;
             case android.R.id.home:
+                mBluetoothLeService.disconnect();
                 onBackPressed();
                 return true;
         }
@@ -222,14 +231,14 @@ public class DeviceControlActivity extends FragmentActivity
         for (BluetoothGattService gattService : gattServices) {
             HashMap<String, String> currentServiceData = new HashMap<String, String>();
             uuid = gattService.getUuid().toString();
-            Log.w(TAG, "uuidGatt " + uuid);
+            Log.w(TAG, "uuid service " + uuid);
 
             if (SampleGattAttributes.HEART_RATE_MEASUREMENT.equals(uuid)) {
                 currentServiceData.put(
                         LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));
                 currentServiceData.put(LIST_UUID, uuid);
 
-                Log.w(TAG, "uuidjafsdfsdfd " + uuid);
+                Log.w(TAG, "added service" + uuid);
                 gattServiceData.add(currentServiceData);
             }
 
@@ -245,14 +254,13 @@ public class DeviceControlActivity extends FragmentActivity
                 charas.add(gattCharacteristic);
                 HashMap<String, String> currentCharaData = new HashMap<String, String>();
                 uuid = gattCharacteristic.getUuid().toString();
-                Log.w(TAG, "uuidGattCharacteristicalsdjafsdfsdfd " + uuid);
 
                 if (SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG.equals(uuid)) {
                     currentCharaData.put(
                             LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));
                     currentCharaData.put(LIST_UUID, uuid);
 
-                    Log.w(TAG, "uuidGattCharacteristicalsdjafsdfsdfd " + uuid);
+                    Log.w(TAG, "added characteristic uuid " + uuid);
                     gattCharacteristicGroupData.add(currentCharaData);
                     mGattCharacteristics.add(charas);
                     gattCharacteristicData.add(gattCharacteristicGroupData);

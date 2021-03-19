@@ -19,7 +19,7 @@ import android.widget.ToggleButton;
 public class CountDownFragment extends Fragment {
     private CountDownTimer countDownTimer;
     private boolean isTimerRunning = false;
-    private long startTimeInMilliseconds = 11000; //10 seconds
+    private long startTimeInMilliseconds = 6000; //10 seconds
     private ToggleButton toggleButton;
     private TextView countDownText;
 
@@ -68,6 +68,9 @@ public class CountDownFragment extends Fragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 RadioButton rb = (RadioButton) view.findViewById(checkedId);
                 switch(rb.getText().toString()) {
+                    case "5s":
+                        startTimeInMilliseconds = 6000;
+                        break;
                     case "10s":
                         startTimeInMilliseconds = 11000;
                         break;
@@ -80,6 +83,10 @@ public class CountDownFragment extends Fragment {
                 }
                 Log.w("w", "startTimeInMilliseconds " + startTimeInMilliseconds);
                 Log.w("w", "You Selected " + rb.getText());
+                if(toggleButton.isChecked()) {
+                    toggleButton.performClick();
+                    toggleButton.performClick();
+                }
             }
         });
         return view;

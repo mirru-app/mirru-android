@@ -31,8 +31,16 @@
         android:id="@+id/radioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:layout_gravity="top|center"
+        android:layout_marginTop="40dp">
 
+        <RadioButton
+            android:id="@+id/radio_zero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5s"
+            android:checked="true"/>
         <RadioButton
             android:id="@+id/radio_one"
             android:layout_width="wrap_content"
