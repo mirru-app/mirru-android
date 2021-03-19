@@ -119,8 +119,8 @@ public class CountDownFragment extends Fragment {
             public void onTick(long millisUntilFinished) {
                 countDownText.setText("" + millisUntilFinished/1000);
                 if (millisUntilFinished < 1000) {
-                    ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-                    toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 1000);
+                    ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 50);
+                    toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 600);
                     Log.w("tag", "timer done");
                 }
             }
