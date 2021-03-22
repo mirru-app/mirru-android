@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -62,12 +63,33 @@
         android:id="@+id/chipGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.MaterialComponents.Light">
+        android:theme="@style/Theme.MaterialComponents.Light"
+        app:singleSelection="true"
+        app:checkedChip="@+id/chip1">
         <com.google.android.material.chip.Chip
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="chip"
-            android:theme="@style/Theme.MaterialComponents.Light"/>
+            android:text="5s"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:id="@+id/chip1"/>
+        <com.google.android.material.chip.Chip
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/chip2"
+            android:text="10s"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+        <com.google.android.material.chip.Chip
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20s"
+            android:id="@+id/chip3"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+        <com.google.android.material.chip.Chip
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="∞"
+            android:id="@+id/chip4"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
     </com.google.android.material.chip.ChipGroup>
 
 </FrameLayout>

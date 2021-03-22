@@ -13,12 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 public class CountDownFragment extends Fragment {
@@ -27,6 +26,7 @@ public class CountDownFragment extends Fragment {
     private long startTimeInMilliseconds = 6000; //10 seconds
     private ToggleButton toggleButton;
     private TextView countDownText;
+    private int infiniteTime = 600000;
 
     public CountDownFragment() {
         // Required empty public constructor
@@ -43,8 +43,6 @@ public class CountDownFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    RadioGroup radioGroup;
-    RadioButton radioButton;
     ChipGroup chipGroup;
 
     @Override
@@ -52,7 +50,6 @@ public class CountDownFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.countdown_fragment, container, false);
 
-        radioGroup = view.findViewById(R.id.radioGroup);
         countDownText = view.findViewById(R.id.countdown_text);
         toggleButton = view.findViewById(R.id.toggleButton);
         chipGroup = (ChipGroup) view.findViewById(R.id.chipGroup);
@@ -69,12 +66,11 @@ public class CountDownFragment extends Fragment {
             }
         });
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
+        chipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton rb = (RadioButton) view.findViewById(checkedId);
-                switch(rb.getText().toString()) {
+            public void onCheckedChanged(ChipGroup group, int checkedId) {
+                Chip chip = (Chip) view.findViewById(checkedId);
+                switch (chip.getText().toString()) {
                     case "5s":
                         startTimeInMilliseconds = 6000;
                         break;
@@ -84,18 +80,19 @@ public class CountDownFragment extends Fragment {
                     case "20s":
                         startTimeInMilliseconds = 21000;
                         break;
-                    case "infinite":
-                        startTimeInMilliseconds = 990000;
+                    case "∞":
+                        startTimeInMilliseconds = infiniteTime;
                         break;
                 }
                 Log.w("w", "startTimeInMilliseconds " + startTimeInMilliseconds);
-                Log.w("w", "You Selected " + rb.getText());
-                if(toggleButton.isChecked()) {
+                Log.w("w", "You Selected " + chip.getText().toString());
+                if (toggleButton.isChecked()) {
                     toggleButton.performClick();
                     toggleButton.performClick();
                 }
             }
         });
+
         return view;
     }
 
@@ -120,7 +117,11 @@ public class CountDownFragment extends Fragment {
         countDownTimer = new CountDownTimer(startTimeInMilliseconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                countDownText.setText("" + millisUntilFinished/1000);
+                if (startTimeInMilliseconds == infiniteTime) {
+                    countDownText.setText("");
+                } else {
+                    countDownText.setText("" + millisUntilFinished / 1000);
+                }
                 if (millisUntilFinished < 1000) {
                     ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 50);
                     toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 600);
@@ -133,7 +134,11 @@ public class CountDownFragment extends Fragment {
                 StopTimer();
             }
         }.start();
-        countDownText.setText(startTimeInMilliseconds/1000 + "");
+        if (startTimeInMilliseconds == infiniteTime) {
+            countDownText.setText("");
+        } else {
+            countDownText.setText(startTimeInMilliseconds / 1000 + "");
+        }
         isTimerRunning = true;
     }
 
