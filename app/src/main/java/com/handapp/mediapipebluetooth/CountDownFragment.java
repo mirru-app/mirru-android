@@ -70,6 +70,7 @@ public class CountDownFragment extends Fragment {
                 }
                 if (toggleButton.isChecked()) {
                     StartTimer();
+                    countDownInfo.setText("");
                 } else if (!toggleButton.isChecked()){
                     StopTimer();
                 }
@@ -128,22 +129,20 @@ public class CountDownFragment extends Fragment {
         countDownTimer = new CountDownTimer(startTimeInMilliseconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                countDownInfo.setText("");
                 if (startTimeInMilliseconds == infiniteTime) {
                     countDownText.setText("");
                 } else {
                     countDownText.setText("" + millisUntilFinished / 1000);
                 }
                 if (millisUntilFinished < 1000) {
-                    ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 75);
-                    toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 600);
-                    Log.w("tag", "timer done");
-
                     if (Build.VERSION.SDK_INT >= 26) {
                         vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
                     } else {
                         vibrator.vibrate(100);
                     }
+                    ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 75);
+                    toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 600);
+                    Log.w("tag", "timer done");
                 }
             }
 
@@ -155,7 +154,7 @@ public class CountDownFragment extends Fragment {
         if (startTimeInMilliseconds == infiniteTime) {
             countDownText.setText("");
         } else {
-            countDownText.setText(startTimeInMilliseconds / 1000 + "");
+            countDownText.setText("0:" + startTimeInMilliseconds / 1000);
         }
         isTimerRunning = true;
     }

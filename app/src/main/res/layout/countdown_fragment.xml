@@ -18,12 +18,11 @@
             android:layout_gravity="center|bottom"
             android:gravity="center"
             android:fontFamily="sans-serif-black"
-            android:text="Tap button to start recording"
+            android:text="Tap button to start recording hand"
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
-            android:typeface="normal"
-            android:layout_marginBottom="-20dp"/>
+            android:typeface="normal" />
         <TextView
             android:id="@+id/countdown_text"
             android:layout_width="wrap_content"
@@ -33,19 +32,17 @@
             android:text=""
             android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="42sp"
+            android:textSize="40sp"
             android:typeface="normal" />
         <ToggleButton
             android:id="@+id/toggleButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
-            android:layout_marginBottom="20dp"
             android:text=""
             android:textOff=""
             android:textOn=""
             android:background="@drawable/record_toggle"/>
-
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroup"
             android:layout_width="wrap_content"
