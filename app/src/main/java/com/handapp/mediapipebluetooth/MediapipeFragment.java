@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -88,6 +89,7 @@ public class MediapipeFragment extends Fragment {
     private Context context;
     private boolean timerRunning;
     private ToggleButton toggleHand;
+    private ToggleButton settingsIcon;
     public static boolean isHandLeft = true;
 
     int counter;
@@ -133,6 +135,22 @@ public class MediapipeFragment extends Fragment {
                 }
             }
         });
+
+        FrameLayout menuLayout = view.findViewById(R.id.toggleMenu);
+        settingsIcon = view.findViewById(R.id.toggleSettings);
+        menuLayout.setVisibility(View.GONE);
+
+        settingsIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!settingsIcon.isChecked()) {
+                    menuLayout.setVisibility(View.GONE);
+                } else if (settingsIcon.isChecked()){
+                    menuLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
 
         return view;
     }

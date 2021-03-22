@@ -10,30 +10,45 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1">
-
         <TextView
             android:id="@+id/no_camera_access_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:text="@string/no_camera_access"
             android:gravity="center"/>
-
     </FrameLayout>
+    <ToggleButton
+        android:id="@+id/toggleSettings"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="right|top"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:text=""
+        android:textOff=""
+        android:textOn=""
+        android:background="@drawable/settings_icon"
+        android:backgroundTint="@color/colorWhite"/>
     <FrameLayout
-        android:id="@+id/preview_display_layout2"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="top|left"
+        android:id="@+id/toggleMenu"
+        android:layout_width="250dp"
+        android:layout_height="200dp"
         android:layout_marginTop="40dp"
-        android:layout_weight="1" >
-        <ToggleButton
-            android:id="@+id/switchHandedness"
-            android:layout_width="100dp"
-            android:layout_height="fill_parent"
-            android:layout_gravity="top|left"
-            android:text=""
-            android:checked="false"
-            android:textOff="Left"
-            android:textOn="Right" />
+        android:layout_gravity="center|top"
+        android:background="@color/colorDarkOpacity">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ToggleButton
+                android:id="@+id/switchHandedness"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:text=""
+                android:checked="false"
+                android:textOff="Record Left Hand"
+                android:textOn="Record Right Hand" />
+        </LinearLayout>
     </FrameLayout>
 </FrameLayout>

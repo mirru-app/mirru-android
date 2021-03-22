@@ -36,14 +36,15 @@ public class CountDownFragment extends Fragment {
         void sendCountdownState(boolean isTimerRunning);
     }
 
-    CountdownInterface countDownInterface;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    CountdownInterface countDownInterface;
     ChipGroup chipGroup;
+    TextView countDownInfo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +54,7 @@ public class CountDownFragment extends Fragment {
         countDownText = view.findViewById(R.id.countdown_text);
         toggleButton = view.findViewById(R.id.toggleButton);
         chipGroup = (ChipGroup) view.findViewById(R.id.chipGroup);
+        countDownInfo = view.findViewById(R.id.countdown_info);
 
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,13 +119,14 @@ public class CountDownFragment extends Fragment {
         countDownTimer = new CountDownTimer(startTimeInMilliseconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
+                countDownInfo.setText("");
                 if (startTimeInMilliseconds == infiniteTime) {
                     countDownText.setText("");
                 } else {
                     countDownText.setText("" + millisUntilFinished / 1000);
                 }
                 if (millisUntilFinished < 1000) {
-                    ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 50);
+                    ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 75);
                     toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 600);
                     Log.w("tag", "timer done");
                 }
