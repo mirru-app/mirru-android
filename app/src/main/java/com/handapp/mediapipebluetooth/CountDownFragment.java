@@ -9,6 +9,8 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +47,7 @@ public class CountDownFragment extends Fragment {
     CountdownInterface countDownInterface;
     ChipGroup chipGroup;
     TextView countDownInfo;
+    Vibrator vibrator;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,10 +58,16 @@ public class CountDownFragment extends Fragment {
         toggleButton = view.findViewById(R.id.toggleButton);
         chipGroup = (ChipGroup) view.findViewById(R.id.chipGroup);
         countDownInfo = view.findViewById(R.id.countdown_info);
+        vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
 
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= 26) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(5, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    vibrator.vibrate(5);
+                }
                 if (toggleButton.isChecked()) {
                     StartTimer();
                 } else if (!toggleButton.isChecked()){
@@ -129,6 +138,12 @@ public class CountDownFragment extends Fragment {
                     ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 75);
                     toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 600);
                     Log.w("tag", "timer done");
+
+                    if (Build.VERSION.SDK_INT >= 26) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        vibrator.vibrate(100);
+                    }
                 }
             }
 
