@@ -24,6 +24,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -67,6 +68,12 @@ public class DeviceScanActivity extends ListActivity {
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (getApplicationContext().checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            }
         }
 
         // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
@@ -154,10 +161,10 @@ public class DeviceScanActivity extends ListActivity {
             return;
         };
 
-        if (!device.getName().equals("Brunel Hand")) {
-            Toast.makeText(this, "Device not supported", Toast.LENGTH_SHORT).show();
-            return;
-        }
+//        if (!device.getName().equals("Brunel Hand")) {
+//            Toast.makeText(this, "Device not supported", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
         final Intent intent = new Intent(this, DeviceControlActivity.class);
         intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, device.getName());
         intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());

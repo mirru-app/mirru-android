@@ -38,7 +38,6 @@ public class CountDownFragment extends Fragment {
         void sendCountdownState(boolean isTimerRunning);
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +82,9 @@ public class CountDownFragment extends Fragment {
             public void onCheckedChanged(ChipGroup group, int checkedId) {
                 Chip chip = (Chip) view.findViewById(checkedId);
                 switch (chip.getText().toString()) {
+                    case "3s":
+                        startTimeInMilliseconds = 4000;
+                        break;
                     case "5s":
                         startTimeInMilliseconds = 6000;
                         break;
@@ -130,7 +132,7 @@ public class CountDownFragment extends Fragment {
             @Override
             public void onTick(long millisUntilFinished) {
                 if (startTimeInMilliseconds == infiniteTime) {
-                    countDownText.setText("");
+                    countDownText.setText("∞");
                 } else {
                     countDownText.setText("" + millisUntilFinished / 1000);
                 }
@@ -152,7 +154,7 @@ public class CountDownFragment extends Fragment {
             }
         }.start();
         if (startTimeInMilliseconds == infiniteTime) {
-            countDownText.setText("");
+            countDownText.setText("∞");
         } else {
             countDownText.setText("0:" + startTimeInMilliseconds / 1000);
         }

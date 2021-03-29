@@ -1,15 +1,7 @@
 package com.handapp.mediapipebluetooth;
 
-import mikera.arrayz.Array;
-import mikera.arrayz.Arrayz;
-import mikera.arrayz.INDArray;
-import mikera.arrayz.NDArray;
-import mikera.matrixx.Matrix;
-import mikera.matrixx.algo.Determinant;
-import mikera.matrixx.impl.IdentityMatrix;
-import mikera.matrixx.impl.TransposedMatrix;
-import mikera.matrixx.impl.VectorMatrixM3;
-import mikera.vectorz.Vector;
+import android.util.Log;
+
 import mikera.vectorz.Vector3;
 
 public class FingerAngles {
@@ -46,7 +38,6 @@ public class FingerAngles {
         return normal;
     }
 
-
     public static double servoAngle(Vector3 fingerDir, Vector3 normal, boolean isThumb) {
         //angle calculation by:
         //https://www.instructables.com/Robotic-Hand-controlled-by-Gesture-with-Arduino-Le/
@@ -57,20 +48,21 @@ public class FingerAngles {
         double angle_degrees = angle_radians * 180 / Math.PI;
 
         double servoAngle;
-        if (MediapipeFragment.isHandLeft) {
+        if (MediapipeFragment.isHandLeft == "Left") {
+            Log.i("TAG", "hand is left");
             if (!isThumb) {
                 servoAngle = (160 - (100 - angle_degrees) * 1.8); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
             } else {
                 servoAngle = (80-(100-angle_degrees)*1.5);; // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
             }
         } else {
+            Log.i("TAG", "hand is right");
             if (!isThumb) {
                 servoAngle = (130 + (100 - angle_degrees) * 1.5); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
             } else {
                 servoAngle = (30+(10+angle_degrees) * 1.2); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
             }
         }
-
 
         return servoAngle;
     }

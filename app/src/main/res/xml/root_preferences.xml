@@ -1,0 +1,16 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="Settings">
+        <EditTextPreference
+            app:key="signature"
+            app:title="@string/deviceName_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="Left"
+            app:entries="@array/handswitch_entries"
+            app:entryValues="@array/handswitch_values"
+            app:key="handswitch"
+            app:title="@string/handswitch_title"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+</PreferenceScreen>

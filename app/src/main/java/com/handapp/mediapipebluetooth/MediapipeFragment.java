@@ -2,11 +2,13 @@ package com.handapp.mediapipebluetooth;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ToggleButton;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,10 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mikera.vectorz.Vector2;
 import mikera.vectorz.Vector3;
-import com.handapp.mediapipebluetooth.FingerAngles;
-import com.handapp.mediapipebluetooth.FingerCircles;
 /**
  * Main activity of MediaPipe example apps.
  */
@@ -60,6 +60,7 @@ public class MediapipeFragment extends Fragment {
     // This is needed because OpenGL represents images assuming the image origin is at the bottom-left
     // corner, whereas MediaPipe in general assumes the image origin is at top-left.
     private static final boolean FLIP_FRAMES_VERTICALLY = true;
+    static String isHandLeft;
 
     static {
         // Load all native libraries needed by the app.
@@ -88,10 +89,7 @@ public class MediapipeFragment extends Fragment {
     //The context from the inflater
     private Context context;
     private boolean timerRunning;
-    private ToggleButton toggleHand;
     private ToggleButton settingsIcon;
-    public static boolean isHandLeft = true;
-
     int counter;
 
     public static MediapipeFragment newInstance() {
@@ -103,6 +101,7 @@ public class MediapipeFragment extends Fragment {
     }
 
     MediapipeInterface mediapipeInterface;
+    SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -111,6 +110,19 @@ public class MediapipeFragment extends Fragment {
         context = inflater.getContext();
         View view = inflater.inflate(R.layout.mediapipe_fragment, container, false);
         previewDisplayView = new SurfaceView(context);
+
+        sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(context);
+
+        isHandLeft = sharedPreferences.getString("handswitch", "Left");
+
+        SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                isHandLeft = sharedPreferences.getString("handswitch", "Left");
+            }
+        };
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
 
         try {
             applicationInfo =
@@ -121,20 +133,6 @@ public class MediapipeFragment extends Fragment {
         }
 
         setupPreviewDisplayView(view);
-        toggleHand = view.findViewById(R.id.switchHandedness);
-
-        toggleHand.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!toggleHand.isChecked()) {
-                    isHandLeft = true;
-                    System.out.println("isHandLeft: " + isHandLeft);
-                } else if (toggleHand.isChecked()){
-                    isHandLeft = false;
-                    System.out.println("isHandLeft: " + isHandLeft);
-                }
-            }
-        });
 
         FrameLayout menuLayout = view.findViewById(R.id.toggleMenu);
         settingsIcon = view.findViewById(R.id.toggleSettings);
@@ -143,14 +141,10 @@ public class MediapipeFragment extends Fragment {
         settingsIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!settingsIcon.isChecked()) {
-                    menuLayout.setVisibility(View.GONE);
-                } else if (settingsIcon.isChecked()){
-                    menuLayout.setVisibility(View.VISIBLE);
-                }
+                Intent intent = new Intent(getContext(), SettingsActivity.class);
+                startActivity(intent);
             }
         });
-
 
         return view;
     }
@@ -194,6 +188,7 @@ public class MediapipeFragment extends Fragment {
                 (packet) -> {
                     List<NormalizedLandmarkList> multiHandLandmarks =
                             PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
+                    Log.w(TAG, "isHandLeft " + isHandLeft);
                     sendDataToBluetooth(multiHandLandmarks);
                 });
     }
@@ -316,37 +311,6 @@ public class MediapipeFragment extends Fragment {
         timerRunning = isTimerRunning;
     }
 
-    private String getMultiHandLandmarksDebugString(List<NormalizedLandmarkList> multiHandLandmarks) {
-        if (multiHandLandmarks.isEmpty()) {
-            return "No hand landmarks";
-        }
-        String multiHandLandmarksStr = "";
-        int handIndex = 0;
-        for (NormalizedLandmarkList landmarks : multiHandLandmarks) {
-            multiHandLandmarksStr +=
-                    "\t#Hand landmarks for hand[" + handIndex + "]: " + landmarks.getLandmarkCount() + "\n";
-            int landmarkIndex = 0;
-            for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
-
-                if (landmarkIndex == 8) {
-                    multiHandLandmarksStr +=
-                            "\t\tLandmark ["
-                                    + landmarkIndex
-                                    + "]: ("
-                                    + landmark.getX()
-                                    + ", "
-                                    + landmark.getY()
-                                    + ", "
-                                    + landmark.getZ()
-                                    + ")\n";
-                }
-                ++landmarkIndex;
-            }
-            ++handIndex;
-        }
-        return multiHandLandmarksStr;
-    }
-
     private String getAnglesOfFingersString(List<NormalizedLandmarkList> multiHandLandmarks) {
         if (multiHandLandmarks.isEmpty()) {
             return "No hand landmarks";
@@ -434,95 +398,5 @@ public class MediapipeFragment extends Fragment {
             ++handIndex;
         }
         return fingerValuesString;
-    }
-
-    private String getCirclesOfFingersString(List<NormalizedLandmarkList> multiHandLandmarks) {
-        if (multiHandLandmarks.isEmpty()) {
-            return "No hand landmarks";
-        }
-        String fingerCirclesString = null;
-        int handIndex = 0;
-
-        Vector3 thumb1 = null, thumb2 = null, thumb3 = null;
-        Vector3 index1 = null, index2 = null, index3 = null;
-        Vector3 mid1 = null, mid2 = null, mid3 = null;
-        Vector3 ring1 = null, ring2 = null, ring3 = null;
-
-        for (NormalizedLandmarkList landmarks : multiHandLandmarks)  {
-            int landmarkIndex = 0;
-            for (NormalizedLandmark landmark : landmarks.getLandmarkList()) {
-
-                if (landmarkIndex == 2) {
-                    thumb1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
-                }
-
-                if (landmarkIndex == 3) {
-                    thumb2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
-                }
-
-                if (landmarkIndex == 4) {
-                    thumb3 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
-                }
-
-                if (landmarkIndex == 6) {
-                    index1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
-                }
-
-                if (landmarkIndex == 7) {
-                    index2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
-                }
-
-                if (landmarkIndex == 8) {
-                    index3 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
-                }
-
-                if (landmarkIndex == 10) {
-                    mid1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
-                }
-
-                if (landmarkIndex == 11) {
-                    mid2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
-                }
-
-                if (landmarkIndex == 12) {
-                    mid3 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
-                }
-
-                if (landmarkIndex == 14) {
-                    ring1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
-                }
-
-                if (landmarkIndex == 15) {
-                    ring2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
-                }
-
-                if (landmarkIndex == 16) {
-                    ring3 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
-                }
-
-                ++landmarkIndex;
-            }
-
-            List rotatedThumb = FingerCircles.rotatePoints(thumb1, thumb2, thumb3);
-            Vector3[] rotatedPointsThumb = (Vector3[])rotatedThumb.get(1);
-            float thumbAngle = FingerCircles.getAngle(rotatedPointsThumb[0], rotatedPointsThumb[1], rotatedPointsThumb[2], true);
-
-            List rotatedI = FingerCircles.rotatePoints(index1, index2, index3);
-            Vector3[] rotatedPointsI = (Vector3[])rotatedI.get(1);
-            float indexAngle = FingerCircles.getAngle(rotatedPointsI[0], rotatedPointsI[1], rotatedPointsI[2], true);
-
-            List rotatedM = FingerCircles.rotatePoints(mid1, mid2, mid3);
-            Vector3[] rotatedPointsM = (Vector3[])rotatedM.get(1);
-            float midAngle = FingerCircles.getAngle(rotatedPointsM[0], rotatedPointsM[1], rotatedPointsM[2], true);
-
-            List rotatedR = FingerCircles.rotatePoints(ring1, ring2, ring3);
-            Vector3[] rotatedPointsR = (Vector3[])rotatedR.get(1);
-            float ringAngle = FingerCircles.getAngle(rotatedPointsR[0], rotatedPointsR[1], rotatedPointsR[2], true);
-
-            fingerCirclesString = (int)thumbAngle + "," + (int)indexAngle + "," + (int)midAngle + "," + (int)ringAngle;
-            System.out.println(fingerCirclesString);
-            ++handIndex;
-        }
-        return fingerCirclesString;
     }
 }
