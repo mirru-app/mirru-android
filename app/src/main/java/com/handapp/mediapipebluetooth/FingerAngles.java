@@ -1,6 +1,9 @@
 package com.handapp.mediapipebluetooth;
 
+import android.provider.MediaStore;
 import android.util.Log;
+
+import com.google.mediapipe.framework.Packet;
 
 import mikera.vectorz.Vector3;
 
@@ -47,23 +50,24 @@ public class FingerAngles {
         double angle_radians = Math.acos(scalarProduct / (palm_module * finger_module));
         double angle_degrees = angle_radians * 180 / Math.PI;
 
-        double servoAngle;
-        if (MediapipeFragment.isHandLeft == "Left") {
-            Log.i("TAG", "hand is left");
-            if (!isThumb) {
-                servoAngle = (160 - (100 - angle_degrees) * 1.8); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
-            } else {
-                servoAngle = (80-(100-angle_degrees)*1.5);; // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
-            }
-        } else {
-            Log.i("TAG", "hand is right");
-            if (!isThumb) {
-                servoAngle = (130 + (100 - angle_degrees) * 1.5); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
-            } else {
-                servoAngle = (30+(10+angle_degrees) * 1.2); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
-            }
-        }
+        double servoAngle = 0;
 
+        switch (MediapipeFragment.isHandLeft) {
+            case "Left":
+                if (!isThumb) {
+                    servoAngle = (160 - (100 - angle_degrees) * 1.8); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
+                } else {
+                    servoAngle = (80-(100-angle_degrees)*1.5);; // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
+                }
+                break;
+            case "Right":
+                if (!isThumb) {
+                    servoAngle = (130 + (100 - angle_degrees) * 1.5); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS!
+                } else {
+                    servoAngle = (30+(10+angle_degrees) * 1.2); // EMPIRICAL CONVERSION, MAY BE DIFFERENT FOR DIFFERENT SERVOS
+                }
+                break;
+        }
         return servoAngle;
     }
 

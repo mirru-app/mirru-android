@@ -118,7 +118,7 @@ public class MediapipeFragment extends Fragment {
 
         SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                isHandLeft = sharedPreferences.getString("handswitch", "Left");
+                isHandLeft = sharedPreferences.getString("handswitch", "");
             }
         };
 
