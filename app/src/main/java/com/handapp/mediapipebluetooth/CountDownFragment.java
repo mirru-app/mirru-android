@@ -20,6 +20,7 @@ import android.widget.ToggleButton;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.mediapipe.framework.Packet;
 
 public class CountDownFragment extends Fragment {
     private CountDownTimer countDownTimer;
@@ -133,8 +134,9 @@ public class CountDownFragment extends Fragment {
             public void onTick(long millisUntilFinished) {
                 isBluetoothConnected = DeviceControlActivity.mConnected;
                 if (!isBluetoothConnected) {
-                    countDownText.setText("Bluetooth disconnected. Please reconnect");
-                    return;
+                    countDownInfo.setText("Bluetooth disconnected. Please reconnect");
+                } else {
+                    countDownInfo.setText("");
                 }
 
                 if (startTimeInMilliseconds == infiniteTime) {
@@ -173,5 +175,6 @@ public class CountDownFragment extends Fragment {
         isTimerRunning = false;
         countDownText.setText("");
         countDownInterface.sendCountdownState(isTimerRunning);
+        countDownInfo.setText("");
     }
 }
