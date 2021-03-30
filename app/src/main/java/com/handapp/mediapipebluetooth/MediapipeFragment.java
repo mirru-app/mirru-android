@@ -84,8 +84,6 @@ public class MediapipeFragment extends Fragment {
     private ApplicationInfo applicationInfo;
     // Handles camera access via the {@link CameraX} Jetpack support library.
     private CameraXPreviewHelper cameraHelper;
-    //The stop and record toggle button for sending hand values over bluetooth.
-    private Button btnSend;
     //The context from the inflater
     private Context context;
     private boolean timerRunning;
@@ -188,7 +186,6 @@ public class MediapipeFragment extends Fragment {
                 (packet) -> {
                     List<NormalizedLandmarkList> multiHandLandmarks =
                             PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
-                    Log.w(TAG, "isHandLeft " + isHandLeft);
                     sendDataToBluetooth(multiHandLandmarks);
                 });
     }

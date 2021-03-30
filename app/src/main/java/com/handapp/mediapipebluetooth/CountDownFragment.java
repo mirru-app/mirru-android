@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.material.chip.Chip;
@@ -29,6 +28,7 @@ public class CountDownFragment extends Fragment {
     private ToggleButton toggleButton;
     private TextView countDownText;
     private int infiniteTime = 600000;
+    Boolean isBluetoothConnected;
 
     public CountDownFragment() {
         // Required empty public constructor
@@ -59,7 +59,7 @@ public class CountDownFragment extends Fragment {
         countDownInfo = view.findViewById(R.id.countdown_info);
         vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
 
-        toggleButton.setOnClickListener(new View.OnClickListener() {
+            toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= 26) {
@@ -131,6 +131,12 @@ public class CountDownFragment extends Fragment {
         countDownTimer = new CountDownTimer(startTimeInMilliseconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
+                isBluetoothConnected = DeviceControlActivity.mConnected;
+                if (!isBluetoothConnected) {
+                    countDownText.setText("Bluetooth disconnected. Please reconnect");
+                    return;
+                }
+
                 if (startTimeInMilliseconds == infiniteTime) {
                     countDownText.setText("∞");
                 } else {

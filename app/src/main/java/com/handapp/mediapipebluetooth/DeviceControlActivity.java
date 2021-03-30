@@ -29,6 +29,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -57,7 +58,7 @@ public class DeviceControlActivity extends FragmentActivity
     private BluetoothLeService mBluetoothLeService;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
-    private boolean mConnected = false;
+    public static boolean mConnected = false;
     private BluetoothGattCharacteristic mWriteCharacteristic;
 
     private final String LIST_NAME = "NAME";
