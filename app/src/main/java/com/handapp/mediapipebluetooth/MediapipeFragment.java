@@ -155,7 +155,7 @@ public class MediapipeFragment extends Fragment {
         try {
             mediapipeInterface = (MediapipeInterface) activity;
         } catch(RuntimeException a) {
-            throw new RuntimeException((activity.toString() + "Must implement Method"));
+            throw new RuntimeException((activity.toString() + "Must implement Method lhlhlkjhlhl"));
         }
     }
 

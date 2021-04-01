@@ -126,7 +126,9 @@ public class CountDownFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         countDownInterface = null;
-        countDownTimer.cancel();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 
     public void StartTimer() {

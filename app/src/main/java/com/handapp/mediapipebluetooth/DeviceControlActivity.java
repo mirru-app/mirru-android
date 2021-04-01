@@ -16,6 +16,8 @@
 
 package com.handapp.mediapipebluetooth;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
@@ -56,8 +58,9 @@ public class DeviceControlActivity extends FragmentActivity
     private String mDeviceName;
     private String mDeviceAddress;
     private BluetoothLeService mBluetoothLeService;
-    private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
+    public static ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
+    public static ArrayList<HashMap<String, String>> gattServiceData;
     public static boolean mConnected = false;
     private BluetoothGattCharacteristic mWriteCharacteristic;
 
@@ -86,6 +89,8 @@ public class DeviceControlActivity extends FragmentActivity
         }
     };
 
+    ArrayList<BluetoothDevice> mDeviceList = new ArrayList<BluetoothDevice>();
+
     // Handles various events fired by the Service.
     // ACTION_GATT_CONNECTED: connected to a GATT server.
     // ACTION_GATT_DISCONNECTED: disconnected from a GATT server.
@@ -96,6 +101,15 @@ public class DeviceControlActivity extends FragmentActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
+
+            if (BluetoothDevice.ACTION_FOUND.equals(intent.getAction()))
+            {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                String uuid = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
+                Log.d("TAG", uuid + " uuid");
+                Log.d("TAG", device + " device");
+            }
+
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 invalidateOptionsMenu();
@@ -106,6 +120,8 @@ public class DeviceControlActivity extends FragmentActivity
                 // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                displayGattServices(mBluetoothLeService.getSupportedGattServices());
             }
         }
     };
@@ -148,9 +164,6 @@ public class DeviceControlActivity extends FragmentActivity
         getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-    }
-
-    private void commitNow() {
     }
 
     @Override
@@ -210,26 +223,28 @@ public class DeviceControlActivity extends FragmentActivity
     // Demonstrates how to iterate through the supported GATT Services/Characteristics.
     private void displayGattServices(List<BluetoothGattService> gattServices) {
         if (gattServices == null) return;
+
         String uuid = null;
         String unknownServiceString = getResources().getString(R.string.unknown_service);
         String unknownCharaString = getResources().getString(R.string.unknown_characteristic);
-        ArrayList<HashMap<String, String>> gattServiceData = new ArrayList<HashMap<String, String>>();
+        gattServiceData = new ArrayList<HashMap<String, String>>();
         ArrayList<ArrayList<HashMap<String, String>>> gattCharacteristicData
                 = new ArrayList<ArrayList<HashMap<String, String>>>();
+
         mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
 
         // Loops through available GATT Services.
         for (BluetoothGattService gattService : gattServices) {
             HashMap<String, String> currentServiceData = new HashMap<String, String>();
             uuid = gattService.getUuid().toString();
-            Log.w(TAG, "uuid service " + uuid);
+            Log.w(TAG, "uuid service dddd" + uuid);
 
             if (SampleGattAttributes.HEART_RATE_MEASUREMENT.equals(uuid)) {
                 currentServiceData.put(
                         LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));
                 currentServiceData.put(LIST_UUID, uuid);
 
-                Log.w(TAG, "added service" + uuid);
+                Log.w(TAG, "added service kkkk" + uuid);
                 gattServiceData.add(currentServiceData);
             }
 
@@ -239,7 +254,6 @@ public class DeviceControlActivity extends FragmentActivity
                     gattService.getCharacteristics();
             ArrayList<BluetoothGattCharacteristic> charas =
                     new ArrayList<BluetoothGattCharacteristic>();
-
             // Loops through available Characteristics.
             for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
                 charas.add(gattCharacteristic);
@@ -266,12 +280,12 @@ public class DeviceControlActivity extends FragmentActivity
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+        intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
         return intentFilter;
     }
 
     @Override
     public void sendDataFromMedipipe(String data) {
-        Log.d(TAG, "interface dataaAAAAaA: " + data);
         if (mGattCharacteristics != null) {
             final BluetoothGattCharacteristic characteristic = mGattCharacteristics.get(0).get((0));
             final int charaProp = characteristic.getProperties();
