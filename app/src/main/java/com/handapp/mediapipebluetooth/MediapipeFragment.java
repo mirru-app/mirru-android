@@ -2,11 +2,13 @@ package com.handapp.mediapipebluetooth;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
@@ -15,6 +17,9 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ToggleButton;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,6 +60,7 @@ public class MediapipeFragment extends Fragment {
     // This is needed because OpenGL represents images assuming the image origin is at the bottom-left
     // corner, whereas MediaPipe in general assumes the image origin is at top-left.
     private static final boolean FLIP_FRAMES_VERTICALLY = true;
+    static String isHandLeft;
 
     static {
         // Load all native libraries needed by the app.
@@ -78,11 +84,11 @@ public class MediapipeFragment extends Fragment {
     private ApplicationInfo applicationInfo;
     // Handles camera access via the {@link CameraX} Jetpack support library.
     private CameraXPreviewHelper cameraHelper;
-    //The stop and record toggle button for sending hand values over bluetooth.
-    private Button btnSend;
     //The context from the inflater
     private Context context;
     private boolean timerRunning;
+    private ToggleButton settingsIcon;
+    int counter;
 
     public static MediapipeFragment newInstance() {
         return new MediapipeFragment();
@@ -93,6 +99,7 @@ public class MediapipeFragment extends Fragment {
     }
 
     MediapipeInterface mediapipeInterface;
+    SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -101,6 +108,19 @@ public class MediapipeFragment extends Fragment {
         context = inflater.getContext();
         View view = inflater.inflate(R.layout.mediapipe_fragment, container, false);
         previewDisplayView = new SurfaceView(context);
+
+        sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(context);
+
+        isHandLeft = sharedPreferences.getString("handswitch", "Left");
+
+        SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                isHandLeft = sharedPreferences.getString("handswitch", "");
+            }
+        };
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
 
         try {
             applicationInfo =
@@ -111,6 +131,18 @@ public class MediapipeFragment extends Fragment {
         }
 
         setupPreviewDisplayView(view);
+
+        FrameLayout menuLayout = view.findViewById(R.id.toggleMenu);
+        settingsIcon = view.findViewById(R.id.toggleSettings);
+        menuLayout.setVisibility(View.GONE);
+
+        settingsIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }
@@ -123,7 +155,7 @@ public class MediapipeFragment extends Fragment {
         try {
             mediapipeInterface = (MediapipeInterface) activity;
         } catch(RuntimeException a) {
-            throw new RuntimeException((activity.toString() + "Must implement Method"));
+            throw new RuntimeException((activity.toString() + "Must implement Method lhlhlkjhlhl"));
         }
     }
 
@@ -154,14 +186,23 @@ public class MediapipeFragment extends Fragment {
                 (packet) -> {
                     List<NormalizedLandmarkList> multiHandLandmarks =
                             PacketGetter.getProtoVector(packet, NormalizedLandmarkList.parser());
-                    if (timerRunning) {
-                        String data = getAnglesOfFingersString(multiHandLandmarks);
-                        mediapipeInterface.sendDataFromMedipipe(data);
-                        Log.i(TAG, "" + getAnglesOfFingersString(multiHandLandmarks));
-                    } else {
-                        return;
-                    }
+                    sendDataToBluetooth(multiHandLandmarks);
                 });
+    }
+
+    public void sendDataToBluetooth(List<NormalizedLandmarkList> multiHandLandmarks) {
+        counter +=1;
+
+        if (counter > 1) {
+            if (timerRunning) {
+                String data = getAnglesOfFingersString(multiHandLandmarks);
+                mediapipeInterface.sendDataFromMedipipe(data);
+                Log.i(TAG, "" + getAnglesOfFingersString(multiHandLandmarks));
+            } else {
+                return;
+            }
+            counter = 0;
+        }
     }
 
     @Override
@@ -271,21 +312,22 @@ public class MediapipeFragment extends Fragment {
         if (multiHandLandmarks.isEmpty()) {
             return "No hand landmarks";
         }
-        String fingerValuesString = "";
+        String fingerValuesString = null;
         int handIndex = 0;
 
         Vector3 palm0 = null;
         Vector3 palm5 = null;
+        Vector3 palm13 = null;
         Vector3 palm17 = null;;
 
+        Vector3 thumb1 = null;
         Vector3 thumb2 = null;
-        Vector3 thumb4 = null;
-        Vector3 index5 = null;
-        Vector3 index8 = null;
-        Vector3 mid9 = null;
-        Vector3 mid12 = null;
-        Vector3 ring13 = null;
-        Vector3 ring16 = null;
+        Vector3 index1 = null;
+        Vector3 index2 = null;
+        Vector3 mid1 = null;
+        Vector3 mid2 = null;
+        Vector3 ring1 = null;
+        Vector3 ring2 = null;
 
         for (NormalizedLandmarkList landmarks : multiHandLandmarks)  {
             int landmarkIndex = 0;
@@ -294,99 +336,64 @@ public class MediapipeFragment extends Fragment {
                     palm0 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
-                if (landmarkIndex == 2) {
-                    thumb2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                if (landmarkIndex == 1) {
+                    thumb1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 4) {
-                    thumb4 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    thumb2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 5) {
-                    index5 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                     palm5 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
+                if (landmarkIndex == 5) {
+                    index1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+
                 if (landmarkIndex == 8) {
-                    index8 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    index2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 9) {
-                    mid9 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    mid1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 12) {
-                    mid12 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    mid2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 13) {
-                    ring13 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    ring1 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                }
+
+                if (landmarkIndex == 13) {
+                    palm13 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 16) {
-                    ring16 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
+                    ring2 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
 
                 if (landmarkIndex == 17) {
                     palm17 = Vector3.of(landmark.getX(), landmark.getY(), landmark.getZ());
                 }
+
                 ++landmarkIndex;
             }
 
-            Vector3 PalmNormal = CalcPalmNormal(palm0, palm5, palm17);
+            Vector3 palmNormal = FingerAngles.getNormal(palm0, palm5, palm17);
+            Vector3 thumbNormal = FingerAngles.getThumbNormal(palm0, palm13, palm17, palm5); //0-> 13 and 17-> 5
 
-            double thumbAngle = ServoAngle(FingerDir(thumb2, thumb4), PalmNormal);
-            double indexAngle = ServoAngle(FingerDir(index5, index8), PalmNormal);
-            double midAngle = ServoAngle(FingerDir(mid9, mid12), PalmNormal);
-            double ringAngle = ServoAngle(FingerDir(ring13, ring16), PalmNormal);
+            double thumbAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(thumb1, thumb2), thumbNormal, true);
+            double indexAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(index1, index2), palmNormal, false);
+            double midAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(mid1, mid2), palmNormal, false);
+            double ringAngle = FingerAngles.servoAngle(FingerAngles.fingerDir(ring1, ring2), palmNormal, false);
 
-            //calibration would get min and max points to map to 0-180
-            double mappedThumb = map(thumbAngle, 80, 40, 180, 0);
-            double mappedIndex = map(indexAngle, 10, 120, 0, 180);
-            double mappedMid = map(midAngle, 10, 120, 0, 180);
-            double mappedRing = map(ringAngle, 10, 120, 0, 180);
-
-            fingerValuesString = (int)mappedThumb + "," + (int)mappedIndex + "," + (int)mappedMid + "," + (int)mappedRing;
+            fingerValuesString = (int)thumbAngle + "," + (int)indexAngle + "," + (int)midAngle + "," + (int)ringAngle;
             ++handIndex;
         }
         return fingerValuesString;
-    }
-
-    private Vector3 FingerDir(Vector3 startingPoint, Vector3 terminalPoint) {
-        terminalPoint.sub(startingPoint);
-        Vector3 direction = new Vector3(terminalPoint);
-        direction.toNormal();
-        return direction;
-    }
-
-    private Vector3 CalcPalmNormal(Vector3 palm0, Vector3 palm5, Vector3 palm17) {
-        palm5.sub(palm0);
-        Vector3 side1 = palm5;
-
-        palm17.sub(palm0);
-        Vector3 side2 = palm17;
-
-        side1.crossProduct(side2);
-
-        Vector3 palmNormal = new Vector3(side1.toNormal());
-        return palmNormal;
-    }
-
-    private double ServoAngle(Vector3 fingerDir, Vector3 palmNormal) {
-        double scalarProduct = palmNormal.x * fingerDir.x + palmNormal.y * fingerDir.y + palmNormal.z * fingerDir.z;
-        double palm_module = Math.sqrt(palmNormal.x * palmNormal.x + palmNormal.y * palmNormal.y + palmNormal.z * palmNormal.z);
-        double finger_module = Math.sqrt(fingerDir.x * fingerDir.x + fingerDir.y * fingerDir.y + fingerDir.z * fingerDir.z);
-        double angle_radians = Math.acos(scalarProduct / (palm_module * finger_module));
-        return angle_radians * 180 / Math.PI;
-    }
-
-    static double map(double value, double start1, double stop1, double start2, double stop2) {
-        double mappedValue = (value - start1) / (stop1 - start1) * (stop2 - start2) + start2;
-        if (mappedValue > 180) {
-            mappedValue = 180;
-        } else if (mappedValue < 0) {
-            mappedValue = 0;
-        }
-        return mappedValue;
     }
 }
