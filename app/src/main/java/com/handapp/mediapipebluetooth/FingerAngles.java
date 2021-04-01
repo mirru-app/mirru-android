@@ -71,11 +71,6 @@ public class FingerAngles {
         return servoAngle;
     }
 
-    public double map(double value, double start1, double stop1, double start2, double stop2) {
-        double mappedValue = (value - start1) / (stop1 - start1) * (stop2 - start2) + start2;
-        return mappedValue;
-    }
-
     static float getAvg(float prev_avg, float x, int n)
     {
         return (prev_avg * n + x) / (n + 1);

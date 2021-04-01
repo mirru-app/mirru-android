@@ -48,7 +48,6 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.bluetooth.BluetoothGattCharacteristic;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -192,7 +191,7 @@ public class DeviceScanActivity extends ListActivity {
 
         ScanFilter.Builder builder = new ScanFilter.Builder();
         // Comment out the below line to see all BLE devices around you
-        builder.setServiceUuid(ParcelUuid.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT));
+        builder.setServiceUuid(ParcelUuid.fromString(GattAttributes.ARDUINO_SERVICE));
         scanFilters.add(builder.build());
 
         return scanFilters;
@@ -218,13 +217,10 @@ public class DeviceScanActivity extends ListActivity {
             if (mBluetoothScanner != null) {
                 mScanning = true;
                 mBluetoothScanner.startScan(scanFilters(), scanSettings, scanCallback);
-                Log.d("TAG", "scan started");
-                Log.d("TAG", scanFilters() + " Filters");
             }
         } else {
             mScanning = false;
             mBluetoothScanner.stopScan(scanCallback);
-            Log.d("TAG", "scan stopped");
         }
         invalidateOptionsMenu();
     }
@@ -243,7 +239,6 @@ public class DeviceScanActivity extends ListActivity {
         public void addDevice(BluetoothDevice device) {
             if(!mLeDevices.contains(device)) {
                 if (device.getName() != null && device.getName().length() > 0) {
-                    Log.i("TAG", device.getAddress() + "device adddddded");
                     mLeDevices.add(device);
                 }
             }
@@ -309,7 +304,6 @@ public class DeviceScanActivity extends ListActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("TAG", result + " result");
                     mLeDeviceListAdapter.addDevice(result.getDevice());
                     mLeDeviceListAdapter.notifyDataSetChanged();
                 }

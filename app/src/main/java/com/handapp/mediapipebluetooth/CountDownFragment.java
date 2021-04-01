@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +19,11 @@ import android.widget.ToggleButton;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.mediapipe.framework.Packet;
 
 public class CountDownFragment extends Fragment {
     private CountDownTimer countDownTimer;
     private boolean isTimerRunning = false;
-    private long startTimeInMilliseconds = 6000; //10 seconds
+    private long startTimeInMilliseconds = 6000;
     private ToggleButton toggleButton;
     private TextView countDownText;
     private int infiniteTime = 600000;
@@ -99,8 +97,6 @@ public class CountDownFragment extends Fragment {
                         startTimeInMilliseconds = infiniteTime;
                         break;
                 }
-                Log.w("w", "startTimeInMilliseconds " + startTimeInMilliseconds);
-                Log.w("w", "You Selected " + chip.getText().toString());
                 if (toggleButton.isChecked()) {
                     toggleButton.performClick();
                     toggleButton.performClick();
@@ -155,7 +151,6 @@ public class CountDownFragment extends Fragment {
                     }
                     ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 75);
                     toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 600);
-                    Log.w("tag", "timer done");
                 }
             }
 

@@ -18,21 +18,14 @@ package com.handapp.mediapipebluetooth;
 
 import java.util.HashMap;
 
-/**
- * This class includes a small subset of standard GATT attributes for demonstration purposes.
- */
-public class SampleGattAttributes {
+public class GattAttributes {
     private static HashMap<String, String> attributes = new HashMap();
-    public static String HEART_RATE_MEASUREMENT = "0000180d-b5a3-f393-e0a9-e50e24dcca9e";
+    public static String ARDUINO_SERVICE = "0000180d-b5a3-f393-e0a9-e50e24dcca9e";
     public static String CLIENT_CHARACTERISTIC_CONFIG = "00002a37-b5a3-f393-e0a9-e50e24dcca9e";
 
     static {
-        // Sample Services.
-        attributes.put("0000180d-b5a3-f393-e0a9-e50e24dcca9e", "Heart Rate Service");
-        attributes.put("0000180a-0000-1000-8000-00805f9b34fb", "Device Information Service");
-        // Sample Characteristics.
-        attributes.put(HEART_RATE_MEASUREMENT, "Heart Rate Measurement");
-        attributes.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
+        attributes.put(ARDUINO_SERVICE, "Arduino Service");
+        attributes.put(CLIENT_CHARACTERISTIC_CONFIG, "Bluetooth Characteristic");
     }
 
     public static String lookup(String uuid, String defaultName) {

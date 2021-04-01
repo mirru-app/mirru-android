@@ -105,8 +105,6 @@ public class DeviceControlActivity extends FragmentActivity
             {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String uuid = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
-                Log.d("TAG", uuid + " uuid");
-                Log.d("TAG", device + " device");
             }
 
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
@@ -131,7 +129,6 @@ public class DeviceControlActivity extends FragmentActivity
             Log.d(TAG, "BluetoothAdapter not initialized");
             return;
         }
-        //Log.i(TAG, "characteristicccccc " + characteristic.getUuid().toString());
         try {
             Log.d(TAG, "data " + URLEncoder.encode(data, "utf-8"));
             characteristic.setValue(data);
@@ -236,14 +233,12 @@ public class DeviceControlActivity extends FragmentActivity
         for (BluetoothGattService gattService : gattServices) {
             HashMap<String, String> currentServiceData = new HashMap<String, String>();
             uuid = gattService.getUuid().toString();
-            Log.w(TAG, "uuid service dddd" + uuid);
 
-            if (SampleGattAttributes.HEART_RATE_MEASUREMENT.equals(uuid)) {
+            if (GattAttributes.ARDUINO_SERVICE.equals(uuid)) {
                 currentServiceData.put(
-                        LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));
+                        LIST_NAME, GattAttributes.lookup(uuid, unknownServiceString));
                 currentServiceData.put(LIST_UUID, uuid);
 
-                Log.w(TAG, "added service kkkk" + uuid);
                 gattServiceData.add(currentServiceData);
             }
 
@@ -259,12 +254,10 @@ public class DeviceControlActivity extends FragmentActivity
                 HashMap<String, String> currentCharaData = new HashMap<String, String>();
                 uuid = gattCharacteristic.getUuid().toString();
 
-                if (SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG.equals(uuid)) {
+                if (GattAttributes.CLIENT_CHARACTERISTIC_CONFIG.equals(uuid)) {
                     currentCharaData.put(
-                            LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));
+                            LIST_NAME, GattAttributes.lookup(uuid, unknownCharaString));
                     currentCharaData.put(LIST_UUID, uuid);
-
-                    Log.w(TAG, "added characteristic uuid " + uuid);
                     gattCharacteristicGroupData.add(currentCharaData);
                     mGattCharacteristics.add(charas);
                     gattCharacteristicData.add(gattCharacteristicGroupData);

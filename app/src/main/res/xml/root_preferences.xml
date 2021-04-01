@@ -1,10 +1,5 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory app:title="Settings">
-        <EditTextPreference
-            app:key="customDeviceName"
-            app:title="@string/deviceName_title"
-            app:useSimpleSummaryProvider="true" />
-
         <ListPreference
             app:defaultValue="Left"
             app:entries="@array/handswitch_entries"
