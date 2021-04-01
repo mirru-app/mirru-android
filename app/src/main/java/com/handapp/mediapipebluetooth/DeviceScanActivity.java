@@ -187,6 +187,17 @@ public class DeviceScanActivity extends ListActivity {
         startActivity(intent);
     }
 
+    private List<ScanFilter> scanFilters() {
+        List<ScanFilter> scanFilters = new ArrayList<>();
+
+        ScanFilter.Builder builder = new ScanFilter.Builder();
+        // Comment out the below line to see all BLE devices around you
+        builder.setServiceUuid(ParcelUuid.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT));
+        scanFilters.add(builder.build());
+
+        return scanFilters;
+    }
+
     private void scanLeDevice(final boolean enable) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
@@ -199,29 +210,16 @@ public class DeviceScanActivity extends ListActivity {
                 }
             }, SCAN_PERIOD);
 
-            mScanning = true;
-
-            UUID BLP_SERVICE_UUID = UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
-            UUID[] serviceUUIDs = new UUID[]{BLP_SERVICE_UUID};
-            List<ScanFilter> filters = null;
-            if(serviceUUIDs != null) {
-                filters = new ArrayList<>();
-                for (UUID serviceUUID : serviceUUIDs) {
-                    ScanFilter filter = new ScanFilter.Builder()
-                            .setServiceUuid(new ParcelUuid(serviceUUID))
-                            .build();
-                    filters.add(filter);
-                }
-            }
 
             ScanSettings scanSettings = new ScanSettings.Builder()
                     .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
-                    .setReportDelay(0L)
                     .build();
 
             if (mBluetoothScanner != null) {
-                mBluetoothScanner.startScan(null, scanSettings, scanCallback);
+                mScanning = true;
+                mBluetoothScanner.startScan(scanFilters(), scanSettings, scanCallback);
                 Log.d("TAG", "scan started");
+                Log.d("TAG", scanFilters() + " Filters");
             }
         } else {
             mScanning = false;
@@ -244,7 +242,7 @@ public class DeviceScanActivity extends ListActivity {
         public void addDevice(BluetoothDevice device) {
             if(!mLeDevices.contains(device)) {
                 if (device.getName() != null && device.getName().length() > 0) {
-                    Log.i("TAG", "device adddddded");
+                    Log.i("TAG", device.getAddress() + "device adddddded");
                     mLeDevices.add(device);
                 }
             }
