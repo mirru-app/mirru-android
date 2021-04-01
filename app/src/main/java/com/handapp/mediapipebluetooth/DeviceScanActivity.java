@@ -181,7 +181,7 @@ public class DeviceScanActivity extends ListActivity {
         intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, device.getName());
         intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
         if (mScanning) {
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            mBluetoothScanner.stopScan(scanCallback);
             mScanning = false;
         }
         startActivity(intent);
@@ -205,7 +205,7 @@ public class DeviceScanActivity extends ListActivity {
                 @Override
                 public void run() {
                     mScanning = false;
-                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    mBluetoothScanner.stopScan(scanCallback);
                     invalidateOptionsMenu();
                 }
             }, SCAN_PERIOD);
@@ -224,6 +224,7 @@ public class DeviceScanActivity extends ListActivity {
         } else {
             mScanning = false;
             mBluetoothScanner.stopScan(scanCallback);
+            Log.d("TAG", "scan stopped");
         }
         invalidateOptionsMenu();
     }
@@ -289,8 +290,6 @@ public class DeviceScanActivity extends ListActivity {
 
             final String deviceName = device.getName();
 
-            device.getUuids();
-
             if (deviceName != null && deviceName.length() > 0) {
                 viewHolder.deviceName.setText(deviceName);
                 viewHolder.deviceAddress.setText(device.getAddress());
@@ -310,6 +309,7 @@ public class DeviceScanActivity extends ListActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.i("TAG", result + " result");
                     mLeDeviceListAdapter.addDevice(result.getDevice());
                     mLeDeviceListAdapter.notifyDataSetChanged();
                 }
@@ -318,30 +318,13 @@ public class DeviceScanActivity extends ListActivity {
 
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
-            // Ignore for now
         }
 
         @Override
         public void onScanFailed(int errorCode) {
-            // Ignore for now
+            Toast.makeText(getApplicationContext(), "Scan Failed " + errorCode, Toast.LENGTH_SHORT).show();
         }
     };
-
-    // Device scan callback.
-    private BluetoothAdapter.LeScanCallback mLeScanCallback =
-            new BluetoothAdapter.LeScanCallback() {
-
-                @Override
-                public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mLeDeviceListAdapter.addDevice(device);
-                            mLeDeviceListAdapter.notifyDataSetChanged();
-                        }
-                    });
-                }
-            };
 
     static class ViewHolder {
         TextView deviceName;
