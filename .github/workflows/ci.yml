@@ -8,11 +8,12 @@ on:
     branches: [ main ]
     paths-ignore:
     - '**/*.md'
+    - '**/*.aar'
   pull_request:
     branches: [ main ]
     paths-ignore:
     - '**/*.md'
-
+    - '**/*.aar'
 jobs:
   build:
     runs-on: ubuntu-latest
