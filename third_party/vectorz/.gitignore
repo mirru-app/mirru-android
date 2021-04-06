@@ -1,0 +1,8 @@
+/classes
+/.settings
+/.classpath
+/.project
+/target
+/bin
+*.dll
+/.idea/
