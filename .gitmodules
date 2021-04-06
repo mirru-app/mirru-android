@@ -4,3 +4,6 @@
 [submodule "third_party/vectorz"]
 	path = third_party/vectorz
 	url = https://github.com/mikera/vectorz.git
+[submodule "mirru-android"]
+	path = mirru-android
+	url = https://github.com/Mirru-App/mirru-android.git
