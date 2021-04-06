@@ -24,22 +24,15 @@ jobs:
       with:
         java-version: 1.8     
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build all artifacts
-      id: buildAllApks
-      uses: eskatos/gradle-command-action@v1.3.3
-      with:
-        gradle-version: current
-        wrapper-cache-enabled: true
-        dependencies-cache-enabled: true
-        configuration-cache-enabled: true
-        arguments: assembleRelease      
+      run: chmod +x gradlew  
     - name: Build with Gradle
       run: ./gradlew build
     - uses: actions/upload-artifact@v2
       with:
         name: Package
-        path: build/libs      
+        path: build/libs
+    - name: Run Unit Tests
+      run: ./gradlew testStagingDebugUnitTest        
     - name: Cleanup Gradle Cache
       # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
       # Restoring these files from a GitHub Actions cache might cause problems for future builds.
