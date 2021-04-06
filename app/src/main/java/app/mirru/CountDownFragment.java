@@ -18,6 +18,7 @@ import android.widget.ToggleButton;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.handapp.mediapipebluetooth.R;
 
 public class CountDownFragment extends Fragment {
     private CountDownTimer countDownTimer;
