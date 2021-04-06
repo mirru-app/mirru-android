@@ -43,7 +43,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.handapp.mediapipebluetooth.R;
+import app.mirru.R;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

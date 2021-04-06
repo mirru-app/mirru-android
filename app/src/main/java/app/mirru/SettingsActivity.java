@@ -6,7 +6,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.handapp.mediapipebluetooth.R;
+import app.mirru.R;
 
 public class SettingsActivity extends AppCompatActivity {
 

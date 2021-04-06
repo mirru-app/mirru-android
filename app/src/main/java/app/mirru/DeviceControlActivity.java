@@ -33,8 +33,7 @@ import android.view.MenuItem;
 
 import androidx.fragment.app.FragmentActivity;
 
-import com.handapp.mediapipebluetooth.R;
-
+import app.mirru.R;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;

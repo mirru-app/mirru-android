@@ -35,7 +35,7 @@ import com.google.mediapipe.framework.AndroidPacketCreator;
 import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
-import com.handapp.mediapipebluetooth.R;
+import app.mirru.R;
 
 import java.util.HashMap;
 import java.util.List;
