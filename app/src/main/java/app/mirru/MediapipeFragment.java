@@ -1,5 +1,4 @@
-package com.handapp.mediapipebluetooth;
-
+package app.mirru;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +35,7 @@ import com.google.mediapipe.framework.AndroidPacketCreator;
 import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
+import com.handapp.mediapipebluetooth.R;
 
 import java.util.HashMap;
 import java.util.List;

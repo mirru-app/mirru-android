@@ -1,5 +1,4 @@
-package com.handapp.mediapipebluetooth;
-
+package app.mirru;
 import android.provider.MediaStore;
 import android.util.Log;
 

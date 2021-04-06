@@ -1,5 +1,4 @@
-package com.handapp.mediapipebluetooth;
-
+package app.mirru;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.ToneGenerator;

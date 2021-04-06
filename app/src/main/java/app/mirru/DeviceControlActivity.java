@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-package com.handapp.mediapipebluetooth;
-
+package app.mirru;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;

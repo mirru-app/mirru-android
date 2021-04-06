@@ -1,4 +1,4 @@
-package com.handapp.mediapipebluetooth;
+package app.mirru;
 
 class Average {
 

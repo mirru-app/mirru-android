@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-package com.handapp.mediapipebluetooth;
-
+package app.mirru;
 import java.util.HashMap;
 
 public class GattAttributes {
