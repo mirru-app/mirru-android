@@ -70,8 +70,8 @@ public class FingerAngles {
         return servoAngle;
     }
 
-//    static float getAvg(float prev_avg, float x, int n)
-//    {
-//        return (prev_avg * n + x) / (n + 1);
-//    }
+    static float getAvg(float prev_avg, float x, int n)
+    {
+        return (prev_avg * n + x) / (n + 1);
+    }
 }
