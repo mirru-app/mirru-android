@@ -24,9 +24,6 @@ android {
 }
 
 repositories {
-    mavenCentral() {
-        url "https://repo1.maven.org/maven2/net/mikera/vectorz"
-    }
 }
 
 dependencies {
