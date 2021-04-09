@@ -2,8 +2,6 @@ package app.mirru;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.google.mediapipe.framework.Packet;
-
 import mikera.vectorz.Vector3;
 
 public class FingerAngles {
