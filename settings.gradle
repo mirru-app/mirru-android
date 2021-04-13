@@ -1,3 +1,5 @@
+rootProject.name='Mirru'
+
+// Include the following Gradle projects
 include ':app'
 include 'third_party:compat:vectorz'
-rootProject.name='Mirru'
