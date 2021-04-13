@@ -14,19 +14,17 @@
         limitations under the License.
         -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/menu_header">
 <item android:id="@+id/menu_refresh"
         android:checkable="false"
         android:orderInCategory="1"
-        app:showAsAction="ifRoom"
-        android:title="Gatt Services" />
+        android:showAsAction="ifRoom" />
 <item android:id="@+id/menu_connect"
         android:title="@string/menu_connect"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom|withText" />
+        android:showAsAction="ifRoom|withText" />
 <item android:id="@+id/menu_disconnect"
         android:title="@string/menu_disconnect"
         android:orderInCategory="101"
-        app:showAsAction="ifRoom|withText" />
+        android:showAsAction="ifRoom|withText" />
 </menu>

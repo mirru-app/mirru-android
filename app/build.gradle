@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "29.0.2"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.1"
     defaultConfig {
         applicationId "com.handapp.mediapipebluetooth"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -47,10 +47,10 @@ dependencies {
     implementation "androidx.camera:camera-camera2:$camerax_version"
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
     //Bluetooth
-    implementation "com.android.support:support-v4:30.0.2"
-    implementation "com.android.support:support-v13:30.0.2"
-    implementation "com.android.support:cardview-v7:30.0.2"
-    implementation "com.android.support:appcompat-v7:30.0.2"
+    implementation "com.android.support:support-v4:28.0.1"
+    implementation "com.android.support:support-v13:28.0.1"
+    implementation "com.android.support:cardview-v7:28.0.1"
+    implementation "com.android.support:appcompat-v7:28.0.1"
 
     // Local dependencies
     implementation(project(":third_party:compat:vectorz"))
