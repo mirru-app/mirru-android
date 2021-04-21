@@ -12,6 +12,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/mp_hand_tracking_aar" />
             <option value="$PROJECT_DIR$/third_party" />
             <option value="$PROJECT_DIR$/third_party/compat" />
             <option value="$PROJECT_DIR$/third_party/compat/vectorz" />

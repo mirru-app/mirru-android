@@ -1,3 +1,4 @@
+include ':mp_hand_tracking_aar'
 rootProject.name='Mirru'
 
 // Include the following Gradle projects

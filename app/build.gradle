@@ -41,6 +41,7 @@ dependencies {
     implementation 'com.google.guava:guava:27.0.1-android'
     implementation 'com.google.guava:guava:27.0.1-android'
     implementation 'com.google.protobuf:protobuf-java:3.11.4'
+    implementation project(path: ':mp_hand_tracking_aar')
     // CameraX core library
     def camerax_version = "1.0.0-beta10"
     implementation "androidx.camera:camera-core:$camerax_version"
