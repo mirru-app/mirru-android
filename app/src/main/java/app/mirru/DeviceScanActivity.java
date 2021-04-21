@@ -33,6 +33,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelUuid;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -81,7 +82,16 @@ public class DeviceScanActivity extends ListActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (getApplicationContext().checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                requestPermissions(
+                        new String[]{
+                                android.Manifest.permission.ACCESS_COARSE_LOCATION
+                        }, 1);
+            }
+            if (getApplicationContext().checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                        new String[]{
+                                android.Manifest.permission.ACCESS_FINE_LOCATION
+                        }, 1);
             }
         }
 
@@ -121,7 +131,6 @@ public class DeviceScanActivity extends ListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_scan:
-                mLeDeviceListAdapter.clear();
                 scanLeDevice(true);
                 break;
             case R.id.menu_stop:
@@ -202,12 +211,15 @@ public class DeviceScanActivity extends ListActivity {
                     mScanning = false;
                     mBluetoothScanner.stopScan(scanCallback);
                     invalidateOptionsMenu();
+                    if (mLeDeviceListAdapter.mLeDevices.isEmpty()) {
+                        Toast.makeText(getApplicationContext(), "No compatible devices found. Try scanning again.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }, SCAN_PERIOD);
 
 
             ScanSettings scanSettings = new ScanSettings.Builder()
-                    .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
+                    .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
                     .build();
 
             if (mBluetoothScanner != null) {
@@ -302,7 +314,7 @@ public class DeviceScanActivity extends ListActivity {
                 public void run() {
                     mLeDeviceListAdapter.addDevice(result.getDevice());
                     mLeDeviceListAdapter.notifyDataSetChanged();
-                }
+;                }
             });
         }
 

@@ -9,6 +9,8 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+/app/release
+/mp_hand_tracking_aar/build
 /captures
 .externalNativeBuild
 .cxx
