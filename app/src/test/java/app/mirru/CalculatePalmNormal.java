@@ -1,4 +1,4 @@
-package com.handapp.mediapipebluetooth;
+package app.mirru;
 
 import org.junit.Test;
 

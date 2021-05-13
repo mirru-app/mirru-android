@@ -196,7 +196,7 @@ public class DeviceScanActivity extends ListActivity {
 
         ScanFilter.Builder builder = new ScanFilter.Builder();
         // Comment out the below line to see all BLE devices around you
-        builder.setServiceUuid(ParcelUuid.fromString(GattAttributes.ARDUINO_SERVICE));
+//        builder.setServiceUuid(ParcelUuid.fromString(GattAttributes.ARDUINO_SERVICE));
         scanFilters.add(builder.build());
 
         return scanFilters;

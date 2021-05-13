@@ -1,4 +1,4 @@
-package com.handapp.mediapipebluetooth;
+package app.mirru;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.handapp.mediapipebluetooth", appContext.getPackageName());
+        assertEquals("app.mirru", appContext.getPackageName());
     }
 }

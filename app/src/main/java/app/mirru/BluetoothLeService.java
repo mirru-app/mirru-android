@@ -51,15 +51,15 @@ public class BluetoothLeService extends Service {
     private static final int STATE_CONNECTED = 2;
 
     public final static String ACTION_GATT_CONNECTED =
-            "com.handapp.mediapipebluetooth.ACTION_GATT_CONNECTED";
+            "app.mirru.ACTION_GATT_CONNECTED";
     public final static String ACTION_GATT_DISCONNECTED =
-            "com.handapp.mediapipebluetooth.ACTION_GATT_DISCONNECTED";
+            "app.mirru.ACTION_GATT_DISCONNECTED";
     public final static String ACTION_GATT_SERVICES_DISCOVERED =
-            "com.handapp.mediapipebluetooth.ACTION_GATT_SERVICES_DISCOVERED";
+            "app.mirru.ACTION_GATT_SERVICES_DISCOVERED";
     public final static String ACTION_DATA_AVAILABLE =
-            "com.handapp.mediapipebluetooth.ACTION_DATA_AVAILABLE";
+            "app.mirru.ACTION_DATA_AVAILABLE";
     public final static String EXTRA_DATA =
-            "com.handapp.mediapipebluetooth.EXTRA_DATA";
+            "app.mirru.EXTRA_DATA";
 
     public final static UUID UUID_ARDUINO =
             UUID.fromString(GattAttributes.ARDUINO_SERVICE);
